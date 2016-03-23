@@ -42,7 +42,11 @@
 					<ul class="dropdown-menu ">
 						
 						<li>
-							<a href="tutorial-node.html">node</a>
+							<a href="tutorial-Converting to and from SVG matrices.html">Converting to and from SVG matrices</a>
+						</li>
+						
+						<li>
+							<a href="tutorial-Node support.html">Node support</a>
 						</li>
 						
 
@@ -86,25 +90,30 @@
 
 
     <section class="readme-section">
-        <article><h2>2D Affine Transformation Matrix</h2><p>An affine transformation matrix (3x3) class for JavaScript that performs<br>various transformations such as rotate, scale, translate, skew, shear, add,<br>subtract, multiply, divide, inverse, decomposing and more (full HTML<br>documentation is included).</p>
+        <article><h1>2D Affine Transformation Matrix</h1><p>An affine transformation matrix (3x3) class for JavaScript that performs<br>various transformations such as rotate, scale, translate, skew, shear, add,<br>subtract, multiply, divide, inverse, decomposing, animation, converting<br>to and from a SVG matrix, creating matrix from triangles and more (full<br>HTML documentation is included).</p>
 <p>It's primarily intended for situations where you need to track or create<br>transforms and want to apply it permanently/manually to your own points<br>and polygons.</p>
-<p>The matrix can optionally synchronize a canvas 2D context so that the<br>transformations on the canvas matches pixel perfect the local<br>transformations of the Matrix object. It can be used to synchronize a<br>DOM element using the toCSS()/toCSS3D() method.</p>
-<p>No dependencies. Node support.</p>
-<h2>Install</h2><p>Download zip and extract to folder.</p>
+<p>The matrix can optionally synchronize a canvas 2D context so that the<br>transformations on the canvas matches pixel perfect the local<br>transformations of the Matrix object. It can be used to synchronize DOM<br>elements using the toCSS() / toCSS3D() methods.</p>
+<p>Optional Node support.</p>
+<p>No dependencies.</p>
+<h1>Install</h1><p>Download zip and extract to folder.</p>
 <p>git via HTTPS:</p>
 <pre class="prettyprint source"><code>$ git clone https://github.com/epistemex/transformation-matrix-js.git</code></pre><p>git via SSH:</p>
 <pre class="prettyprint source"><code>$ git clone git@github.com:epistemex/transformation-matrix-js.git</code></pre><p>Using Bower:</p>
 <pre class="prettyprint source"><code>$ bower install transformation-matrix-js</code></pre><p>Using NPM</p>
-<pre class="prettyprint source"><code>$ npm install transformation-matrix-js</code></pre><h2>Usage</h2><p>Just include the script and create a new instance:</p>
+<pre class="prettyprint source"><code>$ npm install transformation-matrix-js</code></pre><h1>Usage</h1><h2>Browser</h2><p>Just include the script and create a new instance:</p>
 <pre class="prettyprint source"><code>var matrix = new Matrix([context]);</code></pre><p>You can supply an optional canvas 2D context as argument, which will be<br>synchronized with the transformations that are applied to the matrix<br>object.</p>
-<p>Using it with Node - use npm to install the package first, then:</p>
+<h2>Node</h2><p>Using it with Node - use npm to install the package first, then:</p>
 <pre class="prettyprint source"><code>var Matrix = require(&quot;transformation-matrix-js&quot;).Matrix;
-var matrix = new Matrix();</code></pre><p>Some of the methods:</p>
-<pre class="prettyprint source"><code>matrix.interpolateAnim();           // decomposed interpolation
+var matrix = new Matrix();</code></pre><h2>Quick overview</h2><p>Static methods:</p>
+<pre class="prettyprint source"><code>Matrix.fromTriangles(t1, t2);       // returns matrix needed to produce t2 from t1
+Matrix.fromSVGMatrix(svgMatrix);    // create new matrix from SVGMatrix
+Matrix.fromSVGAnimList(tList);        // create new matrix from an SVG animation list</code></pre><p>Some of the methods:</p>
+<pre class="prettyprint source"><code>matrix.interpolateAnim();           // decomposed interpolation (prevents flipping)
 matrix.toString();
 matrix.toJSON();
 matrix.toCSS();
 matrix.toCSS3D();
+matrix.toSVGMatrix();                // creates a SVGMatrix from current transforms
 matrix.toArray();
 matrix.toTypedArray();                // binary array
 matrix.rotate(angle);                // angle in radians
@@ -136,8 +145,7 @@ matrix.clone();
 matrix.isInvertible();
 matrix.isValid();
 matrix.reflectVector(x, y)         // reflects vector on normal (=current x-axis);
-matrix.concat(childMatrix)</code></pre><p>Static methods:</p>
-<pre class="prettyprint source"><code>Matrix.fromTriangles(t1, t2);      // returns matrix needed to produce t2 from t1</code></pre><p>Get current transform matrix properties:</p>
+matrix.concat(childMatrix)</code></pre><p>Get current transform matrix properties:</p>
 <pre class="prettyprint source"><code>var a = matrix.a;    // scale x
 var b = matrix.b;    // shear y
 var c = matrix.c;    // shear x
@@ -146,32 +154,33 @@ var e = matrix.e;    // translate x
 var f = matrix.f;    // translate y</code></pre><p>(also see <code>decompose()</code>).</p>
 <p>Apply to a point:</p>
 <pre class="prettyprint source"><code>var tPoint = matrix.applyToPoint(x, y);</code></pre><p>Apply to an Array with point objects or point pair values:</p>
-<pre class="prettyprint source"><code>var tPoints = matrix.applyToArray([{x: x1, y: y1}, {x: x2, y: y2}, ...]);
-var tPoints = matrix.applyToArray([x1, y1, x2, y2, ...]);
+<pre class="prettyprint source"><code>var tPoints = matrix.applyToArray( [{x: x1, y: y1}, {x: x2, y: y2}, ...] );
+var tPoints = matrix.applyToArray( [x1, y1, x2, y2, ...] );
 var tPoints = matrix.applyToTypedArray(...);</code></pre><p>or apply to a canvas context (other than optionally referenced in constructor):</p>
-<pre class="prettyprint source"><code>matrix.applyToContext(myContext);</code></pre><p>Get inverse transformation matrix (the matrix you need to apply to get back<br>to an identity matrix from whatever the matrix contains):</p>
+<pre class="prettyprint source"><code>matrix.applyToContext( myContext );</code></pre><p>Get inverse transformation matrix (the matrix you need to apply to get back<br>to an identity matrix from whatever the matrix contains):</p>
 <pre class="prettyprint source"><code>var invmatrix = matrix.inverse();</code></pre><p>or</p>
 <pre class="prettyprint source"><code>var invmatrix;
 
 if (matrix.isInvertible()) {                  // check if we can inverse
     invmatrix = matrix.inverse();
 }</code></pre><p>You can interpolate between current and a new matrix. The function<br>returns a new matrix:</p>
-<pre class="prettyprint source"><code>var imatrix = matrix.interpolate(matrix2, t);  // t = [0.0, 1.0]
-var imatrix = matrix.interpolateAnim(matrix2, t);</code></pre><p>The former does a naive interpolation which works fine with translate<br>and scale. The latter is better suited when there is for example rotation<br>involved to avoid &quot;flipping&quot; (and is what the browsers are using) utilizing<br>decomposition.</p>
+<pre class="prettyprint source"><code>var imatrix = matrix.interpolate( matrix2, t );     // t = [0.0, 1.0]
+var imatrix = matrix.interpolateAnim( matrix2, t );</code></pre><p>The former does a naive interpolation which works fine with translate<br>and scale. The latter is better suited when there is for example rotation<br>involved to avoid &quot;flipping&quot; (and is what the browsers are using) utilizing<br>decomposition.</p>
 <p>Check if there is any transforms applied:</p>
 <pre class="prettyprint source"><code>var status = matrix.isIdentity();              // true if identity</code></pre><p>Check if two matrices are identical:</p>
-<pre class="prettyprint source"><code>var status = matrix.isEqual(matrix2);          // true if equal</code></pre><p>Reset matrix to an identity matrix:</p>
+<pre class="prettyprint source"><code>var status = matrix.isEqual( matrix2 );        // true if equal</code></pre><p>Reset matrix to an identity matrix:</p>
 <pre class="prettyprint source"><code>matrix.reset();</code></pre><p>Methods are chainable:</p>
 <pre class="prettyprint source"><code>matrix.rotateDeg(45).translate(100, 120);     // rotate, then translate</code></pre><p>To synchronize a DOM element:</p>
-<pre class="prettyprint source"><code>elem.style.transform = matrix.toCSS();        // some browsers may need prefix</code></pre><p>See documentation for full overview and usage.</p>
-<h2>Contributors</h2><ul>
+<pre class="prettyprint source"><code>elem.style.transform = matrix.toCSS();        // some browsers may need prefix</code></pre><p>Tip: you can also use a SVGMatrix as source for methods taking a matrix.</p>
+<p>See documentation for full overview and usage.</p>
+<h1>Contributors</h1><ul>
 <li>Ken &quot;Fyrstenberg&quot; Nilsen (creator) (https://github.com/epistemex)</li>
 <li>Leon Sorokin (https://github.com/leeoniya)</li>
 <li>Henry Ruhs (https://github.com/redaxmedia)</li>
 <li>Matthieu Dumas (https://github.com/solendil)</li>
 </ul>
 <p>See Change.log for details.</p>
-<h2>License</h2><p>Released under <a href="http://choosealicense.com/licenses/mit/">MIT license</a>. You can use this class in both commercial and non-commercial projects provided that full header (minified and developer versions) is included.</p>
+<h1>License</h1><p>Released under <a href="http://choosealicense.com/licenses/mit/">MIT license</a>. You can use this class in both commercial and non-commercial projects provided that full header (minified and developer versions) is included.</p>
 <p><em>&copy; 2014-2016 Epistemex</em></p>
 <p><img src="http://i.imgur.com/wZSsyt8.png" alt="Epistemex"></p></article>
     </section>

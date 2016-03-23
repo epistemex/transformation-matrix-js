@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>transformation-matrix-js tutorialnode</title>
+	<title>transformation-matrix-js tutorialConverting to and from SVG matrices</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -42,7 +42,11 @@
 					<ul class="dropdown-menu ">
 						
 						<li>
-							<a href="tutorial-node.html">node</a>
+							<a href="tutorial-Converting to and from SVG matrices.html">Converting to and from SVG matrices</a>
+						</li>
+						
+						<li>
+							<a href="tutorial-Node support.html">Node support</a>
 						</li>
 						
 
@@ -64,15 +68,27 @@
 <header>
     
 
-    <h2>node</h2>
+    <h2>Converting to and from SVG matrices</h2>
 </header>
 
 <article>
-    <h1>Node support</h1><p>Install the package using the Node Package Manager (npm).<br>Go to the project directory:</p>
-<pre class="prettyprint source"><code>> npm install transformation-matrix-js</code></pre><p>or install globally:</p>
-<pre class="prettyprint source"><code>> npm install -g transformation-matrix-js</code></pre><p>Then in your Node script you simple require the package:</p>
-<pre class="prettyprint source"><code>var Matrix = require(&quot;transformation-matrix-js&quot;).Matrix;</code></pre><p>and create an instance:</p>
-<pre class="prettyprint source"><code>var matrix = new Matrix();</code></pre><p>Make sure you're using a recent version of node/npm.</p>
+    <p>A SVGMatrix has compatible properties (a-f) which can either be applied manually:</p>
+<pre class="prettyprint source"><code>var svgMatrix = ...obtained from somewhere...,
+    matrix;
+
+matrix = new Matrix().setTransform( svgMatrix.a, svgMatrix.b, svgMatrix.c, svgMatrix.d, svgMatrix.e, svgMatrix.f );</code></pre><p>or by using the new static <code>fromSVGMatrix()</code> method which acts as a short-hand for the same:</p>
+<pre class="prettyprint source"><code>var matrix = Matrix.fromSVGMatrix( svgMatrix );</code></pre><p>If you want to replicate a transformation sequence applied to a SVG shape, you can use the static method <code>fromSVGAnimList()</code>.</p>
+<p>Example - If you have this SVG in your markup:</p>
+<pre class="prettyprint source"><code>&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;>
+    &lt;rect x=&quot;50&quot; y=&quot;50&quot; height=&quot;150&quot; width=&quot;150&quot;
+        transform=&quot;translate(5 -50) rotate(10 75 75) skewX(10)&quot;>
+    &lt;/rect>
+&lt;/svg></code></pre><p>You can obtain the shape's (the <code>rect</code> in this case) transformation list like this:</p>
+<pre class="prettyprint source"><code>var shape = document.querySelector(&quot;svg > rect&quot;),
+    list = shape.transform.baseVal;</code></pre><p>Feeding this to the <code>fromSVGAnimList()</code> method produces a matrix that will produce the same transform in canvas 2D context or with your point or point arrays:</p>
+<pre class="prettyprint source"><code>var matrix = Matrix.fromSVGAnimList( list );</code></pre><p>A matrix can be converted into a SVGMatrix using:</p>
+<pre class="prettyprint source"><code>var svgMatrix = matrix.toSVGMatrix();</code></pre><p>As SVGMatrix doesn't allow one to set an absolute transform the process is using decomposition of the current matrix, where the decomposed values then gets applied to the SVGMatrix in QR order (translate - rotate - scale - skew).</p>
+<p>SVG matrices can also be used directly with canvas in newer browsers.</p>
 </article>
 
 </section>

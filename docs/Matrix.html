@@ -42,7 +42,11 @@
 					<ul class="dropdown-menu ">
 						
 						<li>
-							<a href="tutorial-node.html">node</a>
+							<a href="tutorial-Converting to and from SVG matrices.html">Converting to and from SVG matrices</a>
+						</li>
+						
+						<li>
+							<a href="tutorial-Node support.html">Node support</a>
 						</li>
 						
 
@@ -495,6 +499,275 @@
         <h3 class="subsection-title">Methods</h3>
 
         <dl>
+            
+<dt>
+    <h4 class="name" id=".fromSVGAnimList"><span class="type-signature">&lt;static> </span>fromSVGAnimList<span class="signature">(tList)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Create a matrix from a transform list from an SVG shape. The list<br>can be for example baseVal (ie. <code>shape.transform.baseVal</code>).</p>
+<p>The resulting matrix has all transformations<br>from that list applied in the same order as the list.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>tList</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">SVGAnimatedTransformList</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>transform list from an SVG object.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="Matrix.html">Matrix</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id=".fromSVGMatrix"><span class="type-signature">&lt;static> </span>fromSVGMatrix<span class="signature">(svgMatrix)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Create a new matrix from a SVGMatrix</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>svgMatrix</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">SVGMatrix</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>source SVG Matrix</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="Matrix.html">Matrix</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
             
 <dt>
     <h4 class="name" id=".fromTriangles"><span class="type-signature">&lt;static> </span>fromTriangles<span class="signature">(t1, t2)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
@@ -1571,8 +1844,8 @@
     <div class="description">
         <p>Decompose the current matrix into simple transforms using either<br>QR (default) or LU decomposition. Code adapted from<br>http://www.maths-informatique-jeux.com/blog/frederic/?post/2013/12/01/Decomposition-of-2D-transform-matrices</p>
 <p>The result must be applied in the following order to reproduce the current matrix:</p>
-<pre class="prettyprint source"><code>QR: translate -> rotate -> scale -> skewX
-LU: translate -> skewY  -> scale -> skewX</code></pre>
+<pre class="prettyprint source"><code>QR: translate -> rotate -> scale -> skew
+LU: translate -> skewY  -> scale -> skew</code></pre>
     </div>
     
 
@@ -2641,7 +2914,7 @@ LU: translate -> skewY  -> scale -> skewX</code></pre>
         
             
 <dt>
-    <h4 class="name" id="inverse"><span class="type-signature"></span>inverse<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
+    <h4 class="name" id="inverse"><span class="type-signature"></span>inverse<span class="signature">(<span class="optional">cloneContext</span>)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
     
     
 </dt>
@@ -2657,6 +2930,75 @@ LU: translate -> skewY  -> scale -> skewX</code></pre>
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+		<th>Default</th>
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>cloneContext</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><p>clone current context to resulting matrix</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
     
     
     
@@ -3100,7 +3442,7 @@ LU: translate -> skewY  -> scale -> skewX</code></pre>
         
             
 <dt>
-    <h4 class="name" id="multiply"><span class="type-signature"></span>multiply<span class="signature">(m)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="multiply"><span class="type-signature"></span>multiply<span class="signature">(m)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
     
     
 </dt>
@@ -3108,7 +3450,7 @@ LU: translate -> skewY  -> scale -> skewX</code></pre>
     
     
     <div class="description">
-        <p>Multiplies current matrix with another matrix.</p>
+        <p>Multiplies current matrix with source matrix.</p>
     </div>
     
 
@@ -3158,7 +3500,7 @@ LU: translate -> skewY  -> scale -> skewX</code></pre>
 
             
 
-            <td class="description last"><p>the other matrix</p></td>
+            <td class="description last"><p>source matrix to multiply with.</p></td>
         </tr>
 
 	
@@ -3208,6 +3550,25 @@ LU: translate -> skewY  -> scale -> skewX</code></pre>
     
     
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="Matrix.html">Matrix</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
     
     
 </dd>
@@ -5675,6 +6036,91 @@ LU: translate -> skewY  -> scale -> skewX</code></pre>
 	<dd>
 		
 <span class="param-type">string</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="toSVGMatrix"><span class="type-signature"></span>toSVGMatrix<span class="signature">()</span><span class="type-signature"> &rarr; {SVGMatrix}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Convert current matrix into a SVGMatrix. If SVGMatrix is not supported, a null is returned.<br>BETA</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">SVGMatrix</span>
 
 
 	</dd>

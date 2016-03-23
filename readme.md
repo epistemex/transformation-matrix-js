@@ -1,5 +1,5 @@
 2D Affine Transformation Matrix
--------------------------------
+===============================
 
 An affine transformation matrix (3x3) class for JavaScript that performs
 various transformations such as rotate, scale, translate, skew, shear, add,
@@ -16,13 +16,13 @@ transformations on the canvas matches pixel perfect the local
 transformations of the Matrix object. It can be used to synchronize DOM
 elements using the toCSS() / toCSS3D() methods.
 
-Node support.
+Optional Node support.
 
 No dependencies.
 
 
 Install
--------
+=======
 
 Download zip and extract to folder.
 
@@ -44,7 +44,10 @@ Using NPM
 
 
 Usage
------
+=====
+
+Browser
+-------
 
 Just include the script and create a new instance:
 
@@ -54,10 +57,16 @@ You can supply an optional canvas 2D context as argument, which will be
 synchronized with the transformations that are applied to the matrix
 object.
 
+Node
+----
+
 Using it with Node - use npm to install the package first, then:
 
     var Matrix = require("transformation-matrix-js").Matrix;
     var matrix = new Matrix();
+
+Quick overview
+--------------
 
 Static methods:
 
@@ -67,88 +76,88 @@ Static methods:
 	
 Some of the methods:
 
-    matrix.interpolateAnim();           // decomposed interpolation (prevents flipping)
-    matrix.toString();
-    matrix.toJSON();
-    matrix.toCSS();
-    matrix.toCSS3D();
-    matrix.toSVGMatrix();				// creates a SVGMatrix from current transforms
-    matrix.toArray();
-	matrix.toTypedArray();				// binary array
-    matrix.rotate(angle);    		    // angle in radians
-    matrix.rotateDeg(angle);   		    // angle in degrees
-    matrix.rotateFromVector(x, y);      // use a vector to set angle
-    matrix.translate(x, y);
-    matrix.translateX(x);
-    matrix.translateY(y);
-    matrix.scale(sx, sy);
-    matrix.scaleX(sx);
-    matrix.scaleY(sy);
-    matrix.scaleU(f);                    // scale both x and y
-    matrix.shear(sx, sy);
-    matrix.shearX(sx);
-    matrix.shearY(sy);
-    matrix.skew(ax, ay);                // angle in radians
-    matrix.skewX(ax);
-    matrix.skewY(ay);
-    matrix.transform(a, b, c, d, e, f);
-    matrix.setTransform(a, b, c, d, e, f);
-    matrix.multiply(matrix)				// multiply with another matrix
-    matrix.divide();                    // divide matrix on another matrix
-    matrix.divideScalar();              // divide matrix by scalar value
-    matrix.inverse();
-    matrix.decompose([lu]);             // BETA decompose matrix using QR or LU
-    matrix.determinant();               // get determinant of current matrix
-	matrix.reset();
-    matrix.clone();
-    matrix.isInvertible();
-	matrix.isValid();
-    matrix.reflectVector(x, y)         // reflects vector on normal (=current x-axis);
-    matrix.concat(childMatrix)
+    interpolateAnim();           	// decomposed interpolation (prevents flipping)
+    toString();
+    toJSON();
+    toCSS();
+    toCSS3D();
+    toSVGMatrix();					// creates a SVGMatrix from current transforms
+    toArray();
+	toTypedArray();					// binary array
+    rotate(angle);    		    	// angle in radians
+    rotateDeg(angle);   		    // angle in degrees
+    rotateFromVector(x, y);      	// use a vector to set angle
+    translate(x, y);
+    translateX(x);
+    translateY(y);
+    scale(sx, sy);
+    scaleX(sx);
+    scaleY(sy);
+    scaleU(f);                    	// scale both x and y
+    shear(sx, sy);
+    shearX(sx);
+    shearY(sy);
+    skew(ax, ay);                	// angle in radians
+    skewX(ax);
+    skewY(ay);
+    transform(a, b, c, d, e, f);
+    setTransform(a, b, c, d, e, f);
+    multiply(matrix);				// multiply with another matrix
+    divide();                    	// divide matrix on another matrix
+    divideScalar();              	// divide matrix by scalar value
+    inverse();
+    decompose([lu]);             	// BETA decompose matrix using QR or LU
+    determinant();               	// get determinant of current matrix
+	reset();
+    clone();
+    isInvertible();
+	isValid();
+    reflectVector(x, y)         	// reflects vector on normal (=current x-axis);
+    concat(childMatrix)
 
 Get current transform matrix properties:
 
-    var a = matrix.a;	// scale x
-    var b = matrix.b;	// shear y
-    var c = matrix.c;	// shear x
-    var d = matrix.d;	// scale y
-    var e = matrix.e;	// translate x
-    var f = matrix.f;	// translate y
+    matrix.a;						// scale x
+    matrix.b;						// shear y
+    matrix.c;						// shear x
+    matrix.d;						// scale y
+    matrix.e;						// translate x
+    matrix.f;						// translate y
 
-(also see `decompose()`).
+(see also `decompose()`).
 
 Apply to a point:
 
-    var tPoint = matrix.applyToPoint(x, y);
+    tPoint = matrix.applyToPoint( x, y );
 
 Apply to an Array with point objects or point pair values:
 
-    var tPoints = matrix.applyToArray([{x: x1, y: y1}, {x: x2, y: y2}, ...]);
-    var tPoints = matrix.applyToArray([x1, y1, x2, y2, ...]);
-    var tPoints = matrix.applyToTypedArray(...);
+    tPoints = matrix.applyToArray( [{x: x1, y: y1}, {x: x2, y: y2}, ...] );
+    tPoints = matrix.applyToArray( [x1, y1, x2, y2, ...] );
+    tPoints = matrix.applyToTypedArray(...);
 
 or apply to a canvas context (other than optionally referenced in constructor):
 
-    matrix.applyToContext(myContext);
+    matrix.applyToContext( myContext );
 
 Get inverse transformation matrix (the matrix you need to apply to get back
 to an identity matrix from whatever the matrix contains):
 
-    var invmatrix = matrix.inverse();
+    invMatrix = matrix.inverse();
 
 or
 
-    var invmatrix;
+    var invMatrix;
 
-    if (matrix.isInvertible()) {                  // check if we can inverse
-        invmatrix = matrix.inverse();
+    if (matrix.isInvertible()) {                 	// check if we can inverse
+        invMatrix = matrix.inverse();
     }
 
 You can interpolate between current and a new matrix. The function
 returns a new matrix:
 
-    var imatrix = matrix.interpolate(matrix2, t);  // t = [0.0, 1.0]
-    var imatrix = matrix.interpolateAnim(matrix2, t);
+    iMatrix = matrix.interpolate( matrix2, t );     // t = [0.0, 1.0]
+    iMatrix = matrix.interpolateAnim( matrix2, t );
 
 The former does a naive interpolation which works fine with translate
 and scale. The latter is better suited when there is for example rotation
@@ -157,11 +166,11 @@ decomposition.
 
 Check if there is any transforms applied:
 
-    var status = matrix.isIdentity();              // true if identity
+    state = matrix.isIdentity();        			// true if identity
 
 Check if two matrices are identical:
 
-    var status = matrix.isEqual(matrix2);          // true if equal
+    state = matrix.isEqual( matrix2 );        		// true if equal
 
 Reset matrix to an identity matrix:
 
@@ -169,19 +178,19 @@ Reset matrix to an identity matrix:
 
 Methods are chainable:
 
-    matrix.rotateDeg(45).translate(100, 120);     // rotate, then translate
+    matrix.rotateDeg(45).translate(100, 120);     	// rotate, then translate
 
 To synchronize a DOM element:
 
-    elem.style.transform = matrix.toCSS();        // some browsers may need prefix
+    elem.style.transform = matrix.toCSS();        	// some browsers may need prefix
 
-Tip: you can also use a SVGMatrix as source for methods taking a matrix.
+Tip: you can also use a SVGMatrix directly as source for methods taking a matrix.
 
 See documentation for full overview and usage.
 
 
 Contributors
-------------
+============
 
 - Ken "Fyrstenberg" Nilsen (creator) (https://github.com/epistemex)
 - Leon Sorokin (https://github.com/leeoniya)
@@ -192,7 +201,7 @@ See Change.log for details.
 
 
 License
--------
+=======
 
 Released under [MIT license](http://choosealicense.com/licenses/mit/). You can use this class in both commercial and non-commercial projects provided that full header (minified and developer versions) is included.
 

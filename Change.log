@@ -3,9 +3,11 @@ Change log for 2D Transformation Matrix
 
 2.3.0
 ADD: toSVGMatrix() - creates a SVGMatrix object from current transforms (decomposed)
-ADD. fromSVGMatrix() - static method
-ADD. fromSVGAnimList() - creates a new matrix based on a transform list of an SVG shape
+ADD: fromSVGMatrix() - static method
+ADD: fromSVGAnimList() - creates a new matrix based on a transform list of an SVG shape
+CHG: Additional parameter for fromTriangles() taking an optional canvas 2D context
 CHG: Additional parameter for inverse() to clone context (if any)
+IPR: minor optimizations
 
 2.2.0
 ADD: Create Matrix based on two triangles (S).
@@ -20,7 +22,7 @@ ADD: toTypedArray([use64bit])
 Thanks to https://github.com/redaxmedia (H) for this contribution.
 
 2.0.2
-IMP: Minor optimizations, node/docs
+IPR: Minor optimizations, node/docs
 
 2.0.1
 ADD: NPM package + Node support
@@ -66,7 +68,7 @@ ADD: reflectVector() (BETA: possible special cases, simple impl. for now)
 ADD: concat() current instance onto supplied child matrix and return new
 ADD: isValid() to check the state of the matrix
 ADD: clone() current instance
-IMP: getInverse() now checks if identity first and skips calculations if it is
+IPR: getInverse() now checks if identity first and skips calculations if it is
 
 1.6
 CHG: IMPORTANT! All skew() methods renamed to shear() (L)

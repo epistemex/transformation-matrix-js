@@ -9,11 +9,11 @@
 /**
  * 2D transformation matrix object initialized with identity matrix.
  *
- * The matrix can synchronize a canvas context by supplying the context
+ * The matrix can synchronize a canvas 2D context by supplying the context
  * as an argument, or later apply current absolute transform to an
  * existing context.
  *
- * All values are handled as floating point values.
+ * To synchronize a DOM element you can use `toCSS()` or `toCSS3D()`.
  *
  * @param {CanvasRenderingContext2D} [context] - Optional context to sync with Matrix
  * @prop {number} a - scale x
@@ -33,80 +33,76 @@ function Matrix(context) {
 	me.a = me.d = 1;
 	me.b = me.c = me.e = me.f = 0;
 
-	me.context = context;
-
-	// reset canvas transformations to enable 100% sync.
-	if (context) context.setTransform(1, 0, 0, 1, 0, 0);
+	// reset canvas to enable 100% sync.
+	if (context)
+		(me.context = context).setTransform(1, 0, 0, 1, 0, 0);
 }
 
 /**
  * Returns a new matrix that transforms a triangle t1 into another triangle
  * t2, or throws an exception if it is impossible.
  *
- * Note: the method can take both an array as well as a literal object.
- * Just make sure that both arguments are of the same type.
+ * Note: the method can take both arrays as well as literal objects.
+ * Just make sure that both arguments (t1, t2) are of the same type.
  *
  * @param {{px: number, py: number, qx: number, qy: number, rx: number, ry: number}|Array} t1 - Object or array containing the three points for the triangle.
- * For object use obj.px, obj.py, obj.qx, obj.qy, obj.rx and obj.ry. For arrays provide
- * the points in the order [px, py, qx, qy, rx, ry]
+ * For object use obj.px, obj.py, obj.qx, obj.qy, obj.rx and obj.ry. For arrays provide the points in the order [px, py, qx, qy, rx, ry]
  * @param {{px: number, py: number, qx: number, qy: number, rx: number, ry: number}|Array} t2 - See description for t1.
+ * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
  * @returns {Matrix}
  * @static
  */
-Matrix.fromTriangles = function(t1, t2) {
+Matrix.fromTriangles = function(t1, t2, context) {
 
-	var std2t1 = new Matrix(),
-		std2t2 = new Matrix(),
-		t12std;
+	var m1 = new Matrix(),
+		m2 = new Matrix(context);
 
 	if (Array.isArray(t1)) {
-		std2t1.setTransform(t1[0] - t1[4], t1[1] - t1[5], t1[2] - t1[4], t1[3] - t1[5], t1[4], t1[5]);
-		std2t2.setTransform(t2[0] - t2[4], t2[1] - t2[5], t2[2] - t2[4], t2[3] - t2[5], t2[4], t2[5]);
+		var rx1 = t1[4], ry1 = t1[5], rx2 = t2[4], ry2 = t2[5];
+		r1 = [t1[0] - rx1, t1[1] - ry1, t1[2] - rx1, t1[3] - ry1, rx1, ry1];
+		r2 = [t2[0] - rx2, t2[1] - ry2, t2[2] - rx2, t2[3] - ry2, rx2, ry2]
 	}
 	else {
-		std2t1.setTransform(t1.px - t1.rx, t1.py - t1.ry, t1.qx - t1.rx, t1.qy - t1.ry, t1.rx, t1.ry);
-		std2t1.setTransform(t2.px - t2.rx, t2.py - t2.ry, t2.qx - t2.rx, t2.qy - t2.ry, t2.rx, t2.ry);
+		r1 = [t1.px - t1.rx, t1.py - t1.ry, t1.qx - t1.rx, t1.qy - t1.ry, t1.rx, t1.ry];
+		r2 = [t2.px - t2.rx, t2.py - t2.ry, t2.qx - t2.rx, t2.qy - t2.ry, t2.rx, t2.ry]
 	}
 
-	if (!std2t1.isInvertible())
-		throw "Cannot create matrix.";
+	m1.setTransform.apply(m1, r1);
+	m2.setTransform.apply(m2, r2);
 
-	t12std = std2t1.inverse();
-
-	return std2t2.multiply(t12std)
+	return m2.multiply(m1.inverse())
 };
 
 /**
  * Create a new matrix from a SVGMatrix
  *
  * @param {SVGMatrix} svgMatrix - source SVG Matrix
- * @returns {*}
+ * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
+ * @returns {Matrix}
  * @static
  */
-Matrix.fromSVGMatrix = function(svgMatrix) {
-	var m = new Matrix();
-	return m.setTransform(svgMatrix.a, svgMatrix.b, svgMatrix.c, svgMatrix.d, svgMatrix.e, svgMatrix.f)
+Matrix.fromSVGMatrix = function(svgMatrix, context) {
+	return new Matrix(context).setTransform(svgMatrix.a, svgMatrix.b, svgMatrix.c, svgMatrix.d, svgMatrix.e, svgMatrix.f)
 };
 
 /**
  * Create a matrix from a transform list from an SVG shape. The list
- * can be for example baseVal (ie. `shape.transform.baseVal`).
+ * can be for example baseVal (i.e. `shape.transform.baseVal`).
  *
- * The resulting matrix has all transformations
- * from that list applied in the same order as the list.
+ * The resulting matrix has all transformations from that list applied
+ * in the same order as the list.
  *
  * @param {SVGAnimatedTransformList} tList - transform list from an SVG object.
+ * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
  * @returns {Matrix}
  */
-Matrix.fromSVGAnimList = function(tList) {
+Matrix.fromSVGAnimList = function(tList, context) {
 
-	var m = new Matrix(),
-		i = 0, svgm;
+	var m = new Matrix(context),
+		i = 0;
 
-	while(i < tList.length) {
-		svgm = lst[i++].matrix;
-		m.transform(svgm.a, svgm.b, svgm.c, svgm.d, svgm.e, svgm.f)
-	}
+	while(i < tList.length)
+		m.multiply(tList[i++].matrix);
 
 	return m
 };
@@ -149,7 +145,7 @@ Matrix.prototype = {
 	reflectVector: function(x, y) {
 
 		var v = this.applyToPoint(0, 1),
-			d = 2 * (v.x * x + v.y * y);
+			d = (v.x * x + v.y * y) * 2;
 
 		x -= d * v.x;
 		y -= d * v.y;
@@ -662,7 +658,9 @@ Matrix.prototype = {
 	 * Apply to any canvas 2D context object. This does not affect the
 	 * context that optionally was referenced in constructor unless it is
 	 * the same context.
-	 * @param {CanvasRenderingContext2D} context
+	 *
+	 * @param {CanvasRenderingContext2D} context - target context
+	 * @returns {Matrix}
 	 */
 	applyToContext: function(context) {
 		var me = this;
@@ -681,7 +679,7 @@ Matrix.prototype = {
 			   me._q(me.c, 0) &&
 			   me._q(me.d, 1) &&
 			   me._q(me.e, 0) &&
-			   me._q(me.f, 0);
+			   me._q(me.f, 0)
 	},
 
 	/**
@@ -695,30 +693,8 @@ Matrix.prototype = {
 	/**
 	 * Test if matrix is valid (here meaning the scale values are non-zero).
 	 */
-	isValid : function() {
-		return !this._q(this.a * this.d, 0)
-	},
-
-	/**
-	 * Clones current instance and returning a new matrix.
-	 * @param {boolean} [noContext=false] don't clone context reference if true
-	 * @returns {Matrix}
-	 */
-	clone : function(noContext) {
-
-		var me = this,
-			m = new Matrix();
-
-		m.a = me.a;
-		m.b = me.b;
-		m.c = me.c;
-		m.d = me.d;
-		m.e = me.e;
-		m.f = me.f;
-
-		if (!noContext) m.context = me.context;
-
-		return m
+	isValid: function() {
+		return !(this.a * this.d)
 	},
 
 	/**
@@ -738,6 +714,15 @@ Matrix.prototype = {
 			   q(me.d, m.d) &&
 			   q(me.e, m.e) &&
 			   q(me.f, m.f)
+	},
+
+	/**
+	 * Clones current instance and returning a new matrix.
+	 * @param {boolean} [noContext=false] don't clone context reference if true
+	 * @returns {Matrix}
+	 */
+	clone: function(noContext) {
+		return new Matrix(noContext ? null : this.context).multiply(this)
 	},
 
 	/**
@@ -780,6 +765,8 @@ Matrix.prototype = {
 
 	/**
 	 * Generates a matrix3d() string that can be used with CSS `transform`.
+	 * Although the matrix is for 2D use you may see performance benefits
+	 * on some devices using a 3D CSS transform instead of a 2D.
 	 * @returns {string}
 	 */
 	toCSS3D: function () {
@@ -805,29 +792,36 @@ Matrix.prototype = {
 	},
 
 	/**
-	 * Convert current matrix into a SVGMatrix. If SVGMatrix is not supported, a null is returned.
-	 * BETA
+	 * Convert current matrix into a SVGMatrix. If SVGMatrix is not
+	 * supported, a null is returned.
+	 *
+	 * Note: BETA
 	 *
 	 * @returns {SVGMatrix}
 	 */
 	toSVGMatrix: function() {
 
-		// as we can not set transforms on SVGMatrices we need to decompose our own matrix first:
-		var decomp    = this.decompose(),
+		// as we can not set transforms directly on SVG matrices we need
+		// to decompose our own matrix first:
+		var dc = this.decompose(),
+			translate = dc.translate,
+			scale = dc.scale,
+			skew = dc.skew,
+			eq = this._q,
 			svgMatrix = document.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGMatrix();
 
 		if (!svgMatrix) return null;
 
 		// apply transformations in the correct order (see decompose()), QR: translate -> rotate -> scale -> skew
-		svgMatrix = svgMatrix.translate(decomp.translate.x, decomp.translate.y);
-		svgMatrix = svgMatrix.rotate(decomp.rotation / Math.PI * 180);
-		svgMatrix = svgMatrix.scaleNonUniform(decomp.scale.x, decomp.scale.y);
+		svgMatrix = svgMatrix.translate(translate.x, translate.y);
+		svgMatrix = svgMatrix.rotate(dc.rotation / Math.PI * 180);		// SVGMatrix uses degrees
+		svgMatrix = svgMatrix.scaleNonUniform(scale.x, scale.y);
 
-		if (!this._q(0, decomp.skew.x))
-			svgMatrix = svgMatrix.skewX(decomp.skew.x);
+		if (!eq(0, skew.x))
+			svgMatrix = svgMatrix.skewX(skew.x);
 
-		if (!this._q(0, decomp.skew.y))
-			svgMatrix = svgMatrix.skewY(decomp.skew.y);
+		if (!eq(0, skew.y))
+			svgMatrix = svgMatrix.skewY(skew.y);
 
 		return svgMatrix
 	},
