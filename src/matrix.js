@@ -1,10 +1,10 @@
 /*!
-	2D Transformation Matrix v2.2.0
+	2D Transformation Matrix v2.3.0
 	(c) Epistemex.com 2014-2016
 	License: MIT, header required.
 */
 
-/* --- For contributors: please see readme.md and Change.log --- */
+/* --- To see contributors: please see readme.md and Change.log --- */
 
 /**
  * 2D transformation matrix object initialized with identity matrix.
@@ -55,42 +55,6 @@ function Matrix(context) {
  */
 Matrix.fromTriangles = function(t1, t2) {
 
-	/* A more efficient method, but breaks DRY with possibly too small gain?...
-	var t1px, t1py, t1qx, t1qy, t1rx, t1ry, t2px, t2py, t2qx, t2qy, t2rx, t2ry,
-		de1, de2, a, b, c, d, e, f;
-
-	if (Array.isArray(t1)) {
-		t1px = t1[0]; t1py = t1[1];
-		t1qx = t1[2]; t1qy = t1[3];
-		t1rx = t1[4]; t1ry = t1[5];
-		t2px = t2[0]; t2py = t2[1];
-		t2qx = t2[2]; t2qy = t2[3];
-		t2rx = t2[4]; t2ry = t2[5];
-	}
-	else {
-		t1px = t1.px; t1py = t1.py;
-		t1qx = t1.qx; t1qy = t1.qy;
-		t1rx = t1.rx; t1ry = t1.ry;
-		t2px = t2.px; t2py = t2.py;
-		t2qx = t2.qx; t2qy = t2.qy;
-		t2rx = t2.rx; t2ry = t2.ry;
-	}
-
-	de1 = (t1px - t1qx) * (t1py - t1ry) - (t1px - t1rx) * (t1py - t1qy);
-	de2 = (t1py - t1qy) * (t1px - t1rx) - (t1py - t1ry) * (t1px - t1qx);
-
-	if (!de1 || !de2)	//need epsilon error margin here!
-		throw "Cannot create matrix.";
-
-	a = ((t2px - t2qx) * (t1py - t1ry) - (t2px - t2rx) * (t1py - t1qy)) / de1;
-	b = ((t2px - t2qx) * (t1px - t1rx) - (t2px - t2rx) * (t1px - t1qx)) / de2;
-	c = t2px - a * t1px - b * t1py;
-	d = ((t2py - t2qy) * (t1py - t1ry) - (t2py - t2ry) * (t1py - t1qy)) / de1;
-	e = ((t2py - t2qy) * (t1px - t1rx) - (t2py - t2ry) * (t1px - t1qx)) / de2;
-	f = t2py - d * t1px - e * t1py;
-
-	return new Matrix().setTransform(a, d, b, e, c, f);*/
-
 	var std2t1 = new Matrix(),
 		std2t2 = new Matrix(),
 		t12std;
@@ -112,6 +76,41 @@ Matrix.fromTriangles = function(t1, t2) {
 	return std2t2.multiply(t12std)
 };
 
+/**
+ * Create a new matrix from a SVGMatrix
+ *
+ * @param {SVGMatrix} svgMatrix - source SVG Matrix
+ * @returns {*}
+ * @static
+ */
+Matrix.fromSVGMatrix = function(svgMatrix) {
+	var m = new Matrix();
+	return m.setTransform(svgMatrix.a, svgMatrix.b, svgMatrix.c, svgMatrix.d, svgMatrix.e, svgMatrix.f)
+};
+
+/**
+ * Create a matrix from a transform list from an SVG shape. The list
+ * can be for example baseVal (ie. `shape.transform.baseVal`).
+ *
+ * The resulting matrix has all transformations
+ * from that list applied in the same order as the list.
+ *
+ * @param {SVGAnimatedTransformList} tList - transform list from an SVG object.
+ * @returns {Matrix}
+ */
+Matrix.fromSVGAnimList = function(tList) {
+
+	var m = new Matrix(),
+		i = 0, svgm;
+
+	while(i < tList.length) {
+		svgm = lst[i++].matrix;
+		m.transform(svgm.a, svgm.b, svgm.c, svgm.d, svgm.e, svgm.f)
+	}
+
+	return m
+};
+
 Matrix.prototype = {
 
 	/**
@@ -122,21 +121,21 @@ Matrix.prototype = {
 	 * @returns {Matrix}
 	 */
 	concat: function(cm) {
-		return this.clone()._t(cm.a, cm.b, cm.c, cm.d, cm.e, cm.f);
+		return this.clone()._t(cm.a, cm.b, cm.c, cm.d, cm.e, cm.f)
 	},
 
 	/**
 	 * Flips the horizontal values.
 	 */
 	flipX: function() {
-		return this._t(-1, 0, 0, 1, 0, 0);
+		return this._t(-1, 0, 0, 1, 0, 0)
 	},
 
 	/**
 	 * Flips the vertical values.
 	 */
 	flipY: function() {
-		return this._t(1, 0, 0, -1, 0, 0);
+		return this._t(1, 0, 0, -1, 0, 0)
 	},
 
 	/**
@@ -162,7 +161,7 @@ Matrix.prototype = {
 	 * Short-hand to reset current matrix to an identity matrix.
 	 */
 	reset: function() {
-		return this.setTransform(1, 0, 0, 1, 0, 0);
+		return this.setTransform(1, 0, 0, 1, 0, 0)
 	},
 
 	/**
@@ -172,7 +171,7 @@ Matrix.prototype = {
 	rotate: function(angle) {
 		var cos = Math.cos(angle),
 			sin = Math.sin(angle);
-		return this._t(cos, sin, -sin, cos, 0, 0);
+		return this._t(cos, sin, -sin, cos, 0, 0)
 	},
 
 	/**
@@ -183,7 +182,7 @@ Matrix.prototype = {
 	 * @returns {*}
 	 */
 	rotateFromVector: function(x, y) {
-		return this.rotate(Math.atan2(y, x));
+		return this.rotate(Math.atan2(y, x))
 	},
 
 	/**
@@ -191,7 +190,7 @@ Matrix.prototype = {
 	 * @param {number} angle - angle in degrees
 	 */
 	rotateDeg: function(angle) {
-		return this.rotate(angle * 0.017453292519943295);				// PI / 180
+		return this.rotate(angle * Math.PI / 180)
 	},
 
 	/**
@@ -241,7 +240,7 @@ Matrix.prototype = {
 	 * @param {number} sx - amount of shear for x
 	 */
 	shearX: function(sx) {
-		return this._t(1, 0, sx, 1, 0, 0);
+		return this._t(1, 0, sx, 1, 0, 0)
 	},
 
 	/**
@@ -357,8 +356,9 @@ Matrix.prototype = {
 	},
 
 	/**
-	 * Multiplies current matrix with another matrix.
-	 * @param {Matrix} m - the other matrix
+	 * Multiplies current matrix with source matrix.
+	 * @param {Matrix} m - source matrix to multiply with.
+	 * @returns {Matrix}
 	 */
 	multiply: function(m) {
 		return this._t(m.a, m.b, m.c, m.d, m.e, m.f)
@@ -401,37 +401,27 @@ Matrix.prototype = {
 	 * Get an inverse matrix of current matrix. The method returns a new
 	 * matrix with values you need to use to get to an identity matrix.
 	 * Context from parent matrix is not applied to the returned matrix.
+	 *
+	 * @param {boolean} [cloneContext=false] - clone current context to resulting matrix
 	 * @returns {Matrix}
 	 */
-	inverse: function() {
+	inverse: function(cloneContext) {
 
-		if (this.isIdentity()) {
-			return new Matrix();
-		}
-		else if (!this.isInvertible()) {
-			throw "Matrix is not invertible.";
-		}
-		else {
-			var me = this,
-				a = me.a,
-				b = me.b,
-				c = me.c,
-				d = me.d,
-				e = me.e,
-				f = me.f,
+		var me = this,
+			m = cloneContext ? new Matrix(me.context) : new Matrix(),
+			dt = me.determinant();
 
-				m = new Matrix(),
-				dt = a * d - b * c;	// determinant(), skip DRY here...
+		if (me._q(dt, 0))
+			throw "Matrix not invertible.";
 
-			m.a = d / dt;
-			m.b = -b / dt;
-			m.c = -c / dt;
-			m.d = a / dt;
-			m.e = (c * f - d * e) / dt;
-			m.f = -(a * f - b * e) / dt;
+		m.a = me.d / dt;
+		m.b = -me.b / dt;
+		m.c = -me.c / dt;
+		m.d = me.a / dt;
+		m.e = (me.c * me.f - me.d * me.e) / dt;
+		m.f = -(me.a * me.f - me.b * me.e) / dt;
 
-			return m
-		}
+		return m
 	},
 
 	/**
@@ -497,6 +487,7 @@ Matrix.prototype = {
 		m.translate(translateX, translateY);
 		m.rotate(rotation);
 		m.scale(scaleX, scaleY);
+		//todo test skew scenarios
 
 		return m._x()
 	},
@@ -508,8 +499,8 @@ Matrix.prototype = {
 	 *
 	 * The result must be applied in the following order to reproduce the current matrix:
 	 *
-	 *     QR: translate -> rotate -> scale -> skewX
-	 *     LU: translate -> skewY  -> scale -> skewX
+	 *     QR: translate -> rotate -> scale -> skew
+	 *     LU: translate -> skewY  -> scale -> skew
 	 *
 	 * @param {boolean} [useLU=false] - set to true to use LU rather than QR algorithm
 	 * @returns {*} - an object containing current decomposed values (rotate, skew, scale, translate)
@@ -634,7 +625,7 @@ Matrix.prototype = {
 			}
 		}
 		else {
-			for(; p = points[i]; i++) {
+			while(p = points[i++]) {
 				mxPoints.push(this.applyToPoint(p.x, p.y));
 			}
 		}
@@ -714,14 +705,17 @@ Matrix.prototype = {
 	 * @returns {Matrix}
 	 */
 	clone : function(noContext) {
+
 		var me = this,
 			m = new Matrix();
+
 		m.a = me.a;
 		m.b = me.b;
 		m.c = me.c;
 		m.d = me.d;
 		m.e = me.e;
 		m.f = me.f;
+
 		if (!noContext) m.context = me.context;
 
 		return m
@@ -762,14 +756,17 @@ Matrix.prototype = {
 	 * @returns {*}
 	 */
 	toTypedArray: function(use64) {
+
 		var a = use64 ? new Float64Array(6) : new Float32Array(6),
 			me = this;
+
 		a[0] = me.a;
 		a[1] = me.b;
 		a[2] = me.c;
 		a[3] = me.d;
 		a[4] = me.e;
 		a[5] = me.f;
+
 		return a
 	},
 
@@ -805,6 +802,34 @@ Matrix.prototype = {
 	 */
 	toString: function() {
 		return "" + this.toArray()
+	},
+
+	/**
+	 * Convert current matrix into a SVGMatrix. If SVGMatrix is not supported, a null is returned.
+	 * BETA
+	 *
+	 * @returns {SVGMatrix}
+	 */
+	toSVGMatrix: function() {
+
+		// as we can not set transforms on SVGMatrices we need to decompose our own matrix first:
+		var decomp    = this.decompose(),
+			svgMatrix = document.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGMatrix();
+
+		if (!svgMatrix) return null;
+
+		// apply transformations in the correct order (see decompose()), QR: translate -> rotate -> scale -> skew
+		svgMatrix = svgMatrix.translate(decomp.translate.x, decomp.translate.y);
+		svgMatrix = svgMatrix.rotate(decomp.rotation / Math.PI * 180);
+		svgMatrix = svgMatrix.scaleNonUniform(decomp.scale.x, decomp.scale.y);
+
+		if (!this._q(0, decomp.skew.x))
+			svgMatrix = svgMatrix.skewX(decomp.skew.x);
+
+		if (!this._q(0, decomp.skew.y))
+			svgMatrix = svgMatrix.skewY(decomp.skew.y);
+
+		return svgMatrix
 	},
 
 	/**

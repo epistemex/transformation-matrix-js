@@ -3,8 +3,9 @@
 
 An affine transformation matrix (3x3) class for JavaScript that performs
 various transformations such as rotate, scale, translate, skew, shear, add,
-subtract, multiply, divide, inverse, decomposing and more (full HTML
-documentation is included).
+subtract, multiply, divide, inverse, decomposing, animation, converting 
+to and from a SVG matrix, creating matrix from triangles and more (full 
+HTML documentation is included).
 
 It's primarily intended for situations where you need to track or create
 transforms and want to apply it permanently/manually to your own points
@@ -12,10 +13,12 @@ and polygons.
 
 The matrix can optionally synchronize a canvas 2D context so that the
 transformations on the canvas matches pixel perfect the local
-transformations of the Matrix object. It can be used to synchronize a
-DOM element using the toCSS()/toCSS3D() method.
+transformations of the Matrix object. It can be used to synchronize DOM
+elements using the toCSS() / toCSS3D() methods.
 
-No dependencies. Node support.
+Node support.
+
+No dependencies.
 
 
 Install
@@ -56,13 +59,20 @@ Using it with Node - use npm to install the package first, then:
     var Matrix = require("transformation-matrix-js").Matrix;
     var matrix = new Matrix();
 
+Static methods:
+
+	Matrix.fromTriangles(t1, t2);       // returns matrix needed to produce t2 from t1
+	Matrix.fromSVGMatrix(svgMatrix);    // create new matrix from SVGMatrix
+	Matrix.fromSVGAnimList(tList);		// create new matrix from an SVG animation list
+	
 Some of the methods:
 
-    matrix.interpolateAnim();           // decomposed interpolation
+    matrix.interpolateAnim();           // decomposed interpolation (prevents flipping)
     matrix.toString();
     matrix.toJSON();
     matrix.toCSS();
     matrix.toCSS3D();
+    matrix.toSVGMatrix();				// creates a SVGMatrix from current transforms
     matrix.toArray();
 	matrix.toTypedArray();				// binary array
     matrix.rotate(angle);    		    // angle in radians
@@ -96,10 +106,6 @@ Some of the methods:
     matrix.reflectVector(x, y)         // reflects vector on normal (=current x-axis);
     matrix.concat(childMatrix)
 
-Static methods:
-
-	Matrix.fromTriangles(t1, t2);      // returns matrix needed to produce t2 from t1
-	
 Get current transform matrix properties:
 
     var a = matrix.a;	// scale x
@@ -168,6 +174,8 @@ Methods are chainable:
 To synchronize a DOM element:
 
     elem.style.transform = matrix.toCSS();        // some browsers may need prefix
+
+Tip: you can also use a SVGMatrix as source for methods taking a matrix.
 
 See documentation for full overview and usage.
 

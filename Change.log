@@ -1,11 +1,17 @@
 Change log for 2D Transformation Matrix
 ---------------------------------------
 
+2.3.0
+ADD: toSVGMatrix() - creates a SVGMatrix object from current transforms (decomposed)
+ADD. fromSVGMatrix() - static method
+ADD. fromSVGAnimList() - creates a new matrix based on a transform list of an SVG shape
+CHG: Additional parameter for inverse() to clone context (if any)
+
 2.2.0
 ADD: Create Matrix based on two triangles (S).
 ADD: Short-hand multiply() method for transform() to take a matrix object (S).
 
-Thanks to https://github.com/solendil (S) for contributions.
+Thanks to https://github.com/solendil (S) for these contributions.
 
 2.1.0
 ADD: toCSS3D() (H)
