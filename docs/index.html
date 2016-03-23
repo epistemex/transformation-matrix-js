@@ -108,70 +108,70 @@ var matrix = new Matrix();</code></pre><h2>Quick overview</h2><p>Static methods:
 <pre class="prettyprint source"><code>Matrix.fromTriangles(t1, t2);       // returns matrix needed to produce t2 from t1
 Matrix.fromSVGMatrix(svgMatrix);    // create new matrix from SVGMatrix
 Matrix.fromSVGAnimList(tList);        // create new matrix from an SVG animation list</code></pre><p>Some of the methods:</p>
-<pre class="prettyprint source"><code>matrix.interpolateAnim();           // decomposed interpolation (prevents flipping)
-matrix.toString();
-matrix.toJSON();
-matrix.toCSS();
-matrix.toCSS3D();
-matrix.toSVGMatrix();                // creates a SVGMatrix from current transforms
-matrix.toArray();
-matrix.toTypedArray();                // binary array
-matrix.rotate(angle);                // angle in radians
-matrix.rotateDeg(angle);               // angle in degrees
-matrix.rotateFromVector(x, y);      // use a vector to set angle
-matrix.translate(x, y);
-matrix.translateX(x);
-matrix.translateY(y);
-matrix.scale(sx, sy);
-matrix.scaleX(sx);
-matrix.scaleY(sy);
-matrix.scaleU(f);                    // scale both x and y
-matrix.shear(sx, sy);
-matrix.shearX(sx);
-matrix.shearY(sy);
-matrix.skew(ax, ay);                // angle in radians
-matrix.skewX(ax);
-matrix.skewY(ay);
-matrix.transform(a, b, c, d, e, f);
-matrix.setTransform(a, b, c, d, e, f);
-matrix.multiply(matrix)                // multiply with another matrix
-matrix.divide();                    // divide matrix on another matrix
-matrix.divideScalar();              // divide matrix by scalar value
-matrix.inverse();
-matrix.decompose([lu]);             // BETA decompose matrix using QR or LU
-matrix.determinant();               // get determinant of current matrix
-matrix.reset();
-matrix.clone();
-matrix.isInvertible();
-matrix.isValid();
-matrix.reflectVector(x, y)         // reflects vector on normal (=current x-axis);
-matrix.concat(childMatrix)</code></pre><p>Get current transform matrix properties:</p>
-<pre class="prettyprint source"><code>var a = matrix.a;    // scale x
-var b = matrix.b;    // shear y
-var c = matrix.c;    // shear x
-var d = matrix.d;    // scale y
-var e = matrix.e;    // translate x
-var f = matrix.f;    // translate y</code></pre><p>(also see <code>decompose()</code>).</p>
+<pre class="prettyprint source"><code>interpolateAnim();               // decomposed interpolation (prevents flipping)
+toString();
+toJSON();
+toCSS();
+toCSS3D();
+toSVGMatrix();                    // creates a SVGMatrix from current transforms
+toArray();
+toTypedArray();                    // binary array
+rotate(angle);                    // angle in radians
+rotateDeg(angle);               // angle in degrees
+rotateFromVector(x, y);          // use a vector to set angle
+translate(x, y);
+translateX(x);
+translateY(y);
+scale(sx, sy);
+scaleX(sx);
+scaleY(sy);
+scaleU(f);                        // scale both x and y
+shear(sx, sy);
+shearX(sx);
+shearY(sy);
+skew(ax, ay);                    // angle in radians
+skewX(ax);
+skewY(ay);
+transform(a, b, c, d, e, f);
+setTransform(a, b, c, d, e, f);
+multiply(matrix);                // multiply with another matrix
+divide();                        // divide matrix on another matrix
+divideScalar();                  // divide matrix by scalar value
+inverse();
+decompose([lu]);                 // BETA decompose matrix using QR or LU
+determinant();                   // get determinant of current matrix
+reset();
+clone();
+isInvertible();
+isValid();
+reflectVector(x, y)             // reflects vector on normal (=current x-axis);
+concat(childMatrix)</code></pre><p>Get current transform matrix properties:</p>
+<pre class="prettyprint source"><code>matrix.a;                        // scale x
+matrix.b;                        // shear y
+matrix.c;                        // shear x
+matrix.d;                        // scale y
+matrix.e;                        // translate x
+matrix.f;                        // translate y</code></pre><p>(see also <code>decompose()</code>).</p>
 <p>Apply to a point:</p>
-<pre class="prettyprint source"><code>var tPoint = matrix.applyToPoint(x, y);</code></pre><p>Apply to an Array with point objects or point pair values:</p>
-<pre class="prettyprint source"><code>var tPoints = matrix.applyToArray( [{x: x1, y: y1}, {x: x2, y: y2}, ...] );
-var tPoints = matrix.applyToArray( [x1, y1, x2, y2, ...] );
-var tPoints = matrix.applyToTypedArray(...);</code></pre><p>or apply to a canvas context (other than optionally referenced in constructor):</p>
+<pre class="prettyprint source"><code>tPoint = matrix.applyToPoint( x, y );</code></pre><p>Apply to an Array with point objects or point pair values:</p>
+<pre class="prettyprint source"><code>tPoints = matrix.applyToArray( [{x: x1, y: y1}, {x: x2, y: y2}, ...] );
+tPoints = matrix.applyToArray( [x1, y1, x2, y2, ...] );
+tPoints = matrix.applyToTypedArray(...);</code></pre><p>or apply to a canvas context (other than optionally referenced in constructor):</p>
 <pre class="prettyprint source"><code>matrix.applyToContext( myContext );</code></pre><p>Get inverse transformation matrix (the matrix you need to apply to get back<br>to an identity matrix from whatever the matrix contains):</p>
-<pre class="prettyprint source"><code>var invmatrix = matrix.inverse();</code></pre><p>or</p>
-<pre class="prettyprint source"><code>var invmatrix;
+<pre class="prettyprint source"><code>invMatrix = matrix.inverse();</code></pre><p>or</p>
+<pre class="prettyprint source"><code>var invMatrix;
 
-if (matrix.isInvertible()) {                  // check if we can inverse
-    invmatrix = matrix.inverse();
+if (matrix.isInvertible()) {                     // check if we can inverse
+    invMatrix = matrix.inverse();
 }</code></pre><p>You can interpolate between current and a new matrix. The function<br>returns a new matrix:</p>
-<pre class="prettyprint source"><code>var imatrix = matrix.interpolate( matrix2, t );     // t = [0.0, 1.0]
-var imatrix = matrix.interpolateAnim( matrix2, t );</code></pre><p>The former does a naive interpolation which works fine with translate<br>and scale. The latter is better suited when there is for example rotation<br>involved to avoid &quot;flipping&quot; (and is what the browsers are using) utilizing<br>decomposition.</p>
+<pre class="prettyprint source"><code>iMatrix = matrix.interpolate( matrix2, t );     // t = [0.0, 1.0]
+iMatrix = matrix.interpolateAnim( matrix2, t );</code></pre><p>The former does a naive interpolation which works fine with translate<br>and scale. The latter is better suited when there is for example rotation<br>involved to avoid &quot;flipping&quot; (and is what the browsers are using) utilizing<br>decomposition.</p>
 <p>Check if there is any transforms applied:</p>
-<pre class="prettyprint source"><code>var status = matrix.isIdentity();              // true if identity</code></pre><p>Check if two matrices are identical:</p>
-<pre class="prettyprint source"><code>var status = matrix.isEqual( matrix2 );        // true if equal</code></pre><p>Reset matrix to an identity matrix:</p>
+<pre class="prettyprint source"><code>state = matrix.isIdentity();                    // true if identity</code></pre><p>Check if two matrices are identical:</p>
+<pre class="prettyprint source"><code>state = matrix.isEqual( matrix2 );                // true if equal</code></pre><p>Reset matrix to an identity matrix:</p>
 <pre class="prettyprint source"><code>matrix.reset();</code></pre><p>Methods are chainable:</p>
-<pre class="prettyprint source"><code>matrix.rotateDeg(45).translate(100, 120);     // rotate, then translate</code></pre><p>To synchronize a DOM element:</p>
-<pre class="prettyprint source"><code>elem.style.transform = matrix.toCSS();        // some browsers may need prefix</code></pre><p>Tip: you can also use a SVGMatrix as source for methods taking a matrix.</p>
+<pre class="prettyprint source"><code>matrix.rotateDeg(45).translate(100, 120);         // rotate, then translate</code></pre><p>To synchronize a DOM element:</p>
+<pre class="prettyprint source"><code>elem.style.transform = matrix.toCSS();            // some browsers may need prefix</code></pre><p>Tip: you can also use a SVGMatrix directly as source for methods taking a matrix.</p>
 <p>See documentation for full overview and usage.</p>
 <h1>Contributors</h1><ul>
 <li>Ken &quot;Fyrstenberg&quot; Nilsen (creator) (https://github.com/epistemex)</li>

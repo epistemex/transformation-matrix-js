@@ -92,8 +92,8 @@
     
     <div class="description">
         <p>2D transformation matrix object initialized with identity matrix.</p>
-<p>The matrix can synchronize a canvas context by supplying the context<br>as an argument, or later apply current absolute transform to an<br>existing context.</p>
-<p>All values are handled as floating point values.</p>
+<p>The matrix can synchronize a canvas 2D context by supplying the context<br>as an argument, or later apply current absolute transform to an<br>existing context.</p>
+<p>To synchronize a DOM element you can use <code>toCSS()</code> or <code>toCSS3D()</code>.</p>
     </div>
     
 
@@ -501,7 +501,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id=".fromSVGAnimList"><span class="type-signature">&lt;static> </span>fromSVGAnimList<span class="signature">(tList)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
+    <h4 class="name" id=".fromSVGAnimList"><span class="type-signature">&lt;static> </span>fromSVGAnimList<span class="signature">(tList, <span class="optional">context</span>)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
     
     
 </dt>
@@ -509,8 +509,8 @@
     
     
     <div class="description">
-        <p>Create a matrix from a transform list from an SVG shape. The list<br>can be for example baseVal (ie. <code>shape.transform.baseVal</code>).</p>
-<p>The resulting matrix has all transformations<br>from that list applied in the same order as the list.</p>
+        <p>Create a matrix from a transform list from an SVG shape. The list<br>can be for example baseVal (i.e. <code>shape.transform.baseVal</code>).</p>
+<p>The resulting matrix has all transformations from that list applied<br>in the same order as the list.</p>
     </div>
     
 
@@ -531,6 +531,8 @@
 
 		<th>Type</th>
 
+		
+		<th>Argument</th>
 		
 
 		
@@ -557,10 +559,51 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last"><p>transform list from an SVG object.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">CanvasRenderingContext2D</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>optional canvas 2D context to use for the matrix</p></td>
         </tr>
 
 	
@@ -636,7 +679,7 @@
         
             
 <dt>
-    <h4 class="name" id=".fromSVGMatrix"><span class="type-signature">&lt;static> </span>fromSVGMatrix<span class="signature">(svgMatrix)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
+    <h4 class="name" id=".fromSVGMatrix"><span class="type-signature">&lt;static> </span>fromSVGMatrix<span class="signature">(svgMatrix, <span class="optional">context</span>)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
     
     
 </dt>
@@ -666,6 +709,8 @@
 		<th>Type</th>
 
 		
+		<th>Argument</th>
+		
 
 		
 
@@ -691,10 +736,51 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last"><p>source SVG Matrix</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">CanvasRenderingContext2D</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>optional canvas 2D context to use for the matrix</p></td>
         </tr>
 
 	
@@ -770,7 +856,7 @@
         
             
 <dt>
-    <h4 class="name" id=".fromTriangles"><span class="type-signature">&lt;static> </span>fromTriangles<span class="signature">(t1, t2)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
+    <h4 class="name" id=".fromTriangles"><span class="type-signature">&lt;static> </span>fromTriangles<span class="signature">(t1, t2, <span class="optional">context</span>)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
     
     
 </dt>
@@ -779,7 +865,7 @@
     
     <div class="description">
         <p>Returns a new matrix that transforms a triangle t1 into another triangle<br>t2, or throws an exception if it is impossible.</p>
-<p>Note: the method can take both an array as well as a literal object.<br>Just make sure that both arguments are of the same type.</p>
+<p>Note: the method can take both arrays as well as literal objects.<br>Just make sure that both arguments (t1, t2) are of the same type.</p>
     </div>
     
 
@@ -800,6 +886,8 @@
 
 		<th>Type</th>
 
+		
+		<th>Argument</th>
 		
 
 		
@@ -829,10 +917,18 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"><p>Object or array containing the three points for the triangle.<br>For object use obj.px, obj.py, obj.qx, obj.qy, obj.rx and obj.ry. For arrays provide<br>the points in the order [px, py, qx, qy, rx, ry]</p></td>
+            <td class="description last"><p>Object or array containing the three points for the triangle.<br>For object use obj.px, obj.py, obj.qx, obj.qy, obj.rx and obj.ry. For arrays provide the points in the order [px, py, qx, qy, rx, ry]</p></td>
         </tr>
 
 	
@@ -855,10 +951,51 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last"><p>See description for t1.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">CanvasRenderingContext2D</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>optional canvas 2D context to use for the matrix</p></td>
         </tr>
 
 	
@@ -1077,7 +1214,7 @@
         
             
 <dt>
-    <h4 class="name" id="applyToContext"><span class="type-signature"></span>applyToContext<span class="signature">(context)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="applyToContext"><span class="type-signature"></span>applyToContext<span class="signature">(context)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
     
     
 </dt>
@@ -1135,7 +1272,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>target context</p></td>
         </tr>
 
 	
@@ -1185,6 +1322,25 @@
     
     
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="Matrix.html">Matrix</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
     
     
 </dd>
@@ -5803,7 +5959,7 @@ LU: translate -> skewY  -> scale -> skew</code></pre>
     
     
     <div class="description">
-        <p>Generates a matrix3d() string that can be used with CSS <code>transform</code>.</p>
+        <p>Generates a matrix3d() string that can be used with CSS <code>transform</code>.<br>Although the matrix is for 2D use you may see performance benefits<br>on some devices using a 3D CSS transform instead of a 2D.</p>
     </div>
     
 
@@ -6058,7 +6214,8 @@ LU: translate -> skewY  -> scale -> skew</code></pre>
     
     
     <div class="description">
-        <p>Convert current matrix into a SVGMatrix. If SVGMatrix is not supported, a null is returned.<br>BETA</p>
+        <p>Convert current matrix into a SVGMatrix. If SVGMatrix is not<br>supported, a null is returned.</p>
+<p>Note: BETA</p>
     </div>
     
 
