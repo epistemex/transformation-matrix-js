@@ -1,6 +1,13 @@
 Change log for 2D Transformation Matrix
 ---------------------------------------
 
+2.3.1
+ADD: toCSV() returns a comma-separated values string incl. line-ending
+CHG: fromSVGAnimList() (2.3.0) changed name to fromSVGTransformList()
+CHG: toString() returns a more readable format incl. option to truncate decimal digits
+FIX: toString() wrongly converted array to type string
+IPR: Minor optimization, corrections in the documentation
+
 2.3.0
 ADD: toSVGMatrix() - creates a SVGMatrix object from current transforms (decomposed)
 ADD: fromSVGMatrix() - static method

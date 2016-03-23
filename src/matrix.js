@@ -1,5 +1,5 @@
 /*!
-	2D Transformation Matrix v2.3.0
+	2D Transformation Matrix v2.3.1
 	(c) Epistemex.com 2014-2016
 	License: MIT, header required.
 */
@@ -13,7 +13,7 @@
  * as an argument, or later apply current absolute transform to an
  * existing context.
  *
- * To synchronize a DOM element you can use `toCSS()` or `toCSS3D()`.
+ * To synchronize a DOM element you can use [`toCSS()`]{@link Matrix#toCSS} or [`toCSS3D()`]{@link Matrix#toCSS3D}.
  *
  * @param {CanvasRenderingContext2D} [context] - Optional context to sync with Matrix
  * @prop {number} a - scale x
@@ -24,6 +24,8 @@
  * @prop {number} f - translate y
  * @prop {CanvasRenderingContext2D|null} [context=null] - set or get current canvas context
  * @constructor
+ * @license MIT license (header required)
+ * @copyright Epistemex.com 2014-2016
  */
 function Matrix(context) {
 
@@ -39,17 +41,18 @@ function Matrix(context) {
 }
 
 /**
- * Returns a new matrix that transforms a triangle t1 into another triangle
- * t2, or throws an exception if it is impossible.
+ * Returns a new matrix that transforms a triangle `t1` into another triangle
+ * `t2`, or throws an exception if it is impossible.
  *
  * Note: the method can take both arrays as well as literal objects.
- * Just make sure that both arguments (t1, t2) are of the same type.
+ * Just make sure that both arguments (`t1`, `t2`) are of the same type.
  *
  * @param {{px: number, py: number, qx: number, qy: number, rx: number, ry: number}|Array} t1 - Object or array containing the three points for the triangle.
  * For object use obj.px, obj.py, obj.qx, obj.qy, obj.rx and obj.ry. For arrays provide the points in the order [px, py, qx, qy, rx, ry]
  * @param {{px: number, py: number, qx: number, qy: number, rx: number, ry: number}|Array} t2 - See description for t1.
  * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
  * @returns {Matrix}
+ * @throws Exception is matrix becomes not invertible
  * @static
  */
 Matrix.fromTriangles = function(t1, t2, context) {
@@ -80,9 +83,10 @@ Matrix.fromTriangles = function(t1, t2, context) {
  * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
  * @returns {Matrix}
  * @static
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix|MDN / SVGMatrix}
  */
 Matrix.fromSVGMatrix = function(svgMatrix, context) {
-	return new Matrix(context).setTransform(svgMatrix.a, svgMatrix.b, svgMatrix.c, svgMatrix.d, svgMatrix.e, svgMatrix.f)
+	return new Matrix(context).multiply(svgMatrix)
 };
 
 /**
@@ -92,11 +96,12 @@ Matrix.fromSVGMatrix = function(svgMatrix, context) {
  * The resulting matrix has all transformations from that list applied
  * in the same order as the list.
  *
- * @param {SVGAnimatedTransformList} tList - transform list from an SVG object.
+ * @param {SVGTransformList} tList - transform list from an SVG shape.
  * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
  * @returns {Matrix}
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/SVGTransformList|MDN / SVGTransformList}
  */
-Matrix.fromSVGAnimList = function(tList, context) {
+Matrix.fromSVGTransformList = function(tList, context) {
 
 	var m = new Matrix(context),
 		i = 0;
@@ -114,14 +119,15 @@ Matrix.prototype = {
 	 * returns a new matrix. This instance is used on left side.
 	 *
 	 * @param {Matrix} cm - child matrix to apply concatenation to
-	 * @returns {Matrix}
+	 * @returns {Matrix} - new Matrix instance
 	 */
 	concat: function(cm) {
-		return this.clone()._t(cm.a, cm.b, cm.c, cm.d, cm.e, cm.f)
+		return this.clone().multiply(cm)
 	},
 
 	/**
 	 * Flips the horizontal values.
+	 * @returns {Matrix}
 	 */
 	flipX: function() {
 		return this._t(-1, 0, 0, 1, 0, 0)
@@ -129,6 +135,7 @@ Matrix.prototype = {
 
 	/**
 	 * Flips the vertical values.
+	 * @returns {Matrix}
 	 */
 	flipY: function() {
 		return this._t(1, 0, 0, -1, 0, 0)
@@ -150,19 +157,21 @@ Matrix.prototype = {
 		x -= d * v.x;
 		y -= d * v.y;
 
-		return {x:x, y:y}
+		return {x: x, y: y}
 	},
 
 	/**
 	 * Short-hand to reset current matrix to an identity matrix.
+	 * @returns {Matrix}
 	 */
 	reset: function() {
 		return this.setTransform(1, 0, 0, 1, 0, 0)
 	},
 
 	/**
-	 * Rotates current matrix accumulative by angle.
+	 * Rotates current matrix by angle (accumulative).
 	 * @param {number} angle - angle in radians
+	 * @returns {Matrix}
 	 */
 	rotate: function(angle) {
 		var cos = Math.cos(angle),
@@ -171,11 +180,11 @@ Matrix.prototype = {
 	},
 
 	/**
-	 * Converts a vector given as x and y to angle, and
+	 * Converts a vector given as `x` and `y` to angle, and
 	 * rotates (accumulative).
 	 * @param x
 	 * @param y
-	 * @returns {*}
+	 * @returns {Matrix}
 	 */
 	rotateFromVector: function(x, y) {
 		return this.rotate(Math.atan2(y, x))
@@ -184,6 +193,7 @@ Matrix.prototype = {
 	/**
 	 * Helper method to make a rotation based on an angle in degrees.
 	 * @param {number} angle - angle in degrees
+	 * @returns {Matrix}
 	 */
 	rotateDeg: function(angle) {
 		return this.rotate(angle * Math.PI / 180)
@@ -192,6 +202,7 @@ Matrix.prototype = {
 	/**
 	 * Scales current matrix uniformly and accumulative.
 	 * @param {number} f - scale factor for both x and y (1 does nothing)
+	 * @returns {Matrix}
 	 */
 	scaleU: function(f) {
 		return this._t(f, 0, 0, f, 0, 0)
@@ -201,6 +212,7 @@ Matrix.prototype = {
 	 * Scales current matrix accumulative.
 	 * @param {number} sx - scale factor x (1 does nothing)
 	 * @param {number} sy - scale factor y (1 does nothing)
+	 * @returns {Matrix}
 	 */
 	scale: function(sx, sy) {
 		return this._t(sx, 0, 0, sy, 0, 0)
@@ -209,6 +221,7 @@ Matrix.prototype = {
 	/**
 	 * Scales current matrix on x axis accumulative.
 	 * @param {number} sx - scale factor x (1 does nothing)
+	 * @returns {Matrix}
 	 */
 	scaleX: function(sx) {
 		return this._t(sx, 0, 0, 1, 0, 0)
@@ -217,6 +230,7 @@ Matrix.prototype = {
 	/**
 	 * Scales current matrix on y axis accumulative.
 	 * @param {number} sy - scale factor y (1 does nothing)
+	 * @returns {Matrix}
 	 */
 	scaleY: function(sy) {
 		return this._t(1, 0, 0, sy, 0, 0)
@@ -226,6 +240,7 @@ Matrix.prototype = {
 	 * Apply shear to the current matrix accumulative.
 	 * @param {number} sx - amount of shear for x
 	 * @param {number} sy - amount of shear for y
+	 * @returns {Matrix}
 	 */
 	shear: function(sx, sy) {
 		return this._t(1, sy, sx, 1, 0, 0)
@@ -234,6 +249,7 @@ Matrix.prototype = {
 	/**
 	 * Apply shear for x to the current matrix accumulative.
 	 * @param {number} sx - amount of shear for x
+	 * @returns {Matrix}
 	 */
 	shearX: function(sx) {
 		return this._t(1, 0, sx, 1, 0, 0)
@@ -242,6 +258,7 @@ Matrix.prototype = {
 	/**
 	 * Apply shear for y to the current matrix accumulative.
 	 * @param {number} sy - amount of shear for y
+	 * @returns {Matrix}
 	 */
 	shearY: function(sy) {
 		return this._t(1, sy, 0, 1, 0, 0)
@@ -251,6 +268,7 @@ Matrix.prototype = {
 	 * Apply skew to the current matrix accumulative.
 	 * @param {number} ax - angle of skew for x
 	 * @param {number} ay - angle of skew for y
+	 * @returns {Matrix}
 	 */
 	skew: function(ax, ay) {
 		return this.shear(Math.tan(ax), Math.tan(ay))
@@ -259,6 +277,7 @@ Matrix.prototype = {
 	/**
 	 * Apply skew for x to the current matrix accumulative.
 	 * @param {number} ax - angle of skew for x
+	 * @returns {Matrix}
 	 */
 	skewX: function(ax) {
 		return this.shearX(Math.tan(ax))
@@ -267,6 +286,7 @@ Matrix.prototype = {
 	/**
 	 * Apply skew for y to the current matrix accumulative.
 	 * @param {number} ay - angle of skew for y
+	 * @returns {Matrix}
 	 */
 	skewY: function(ay) {
 		return this.shearY(Math.tan(ay))
@@ -280,6 +300,7 @@ Matrix.prototype = {
 	 * @param {number} d - scale y
 	 * @param {number} e - translate x
 	 * @param {number} f - translate y
+	 * @returns {Matrix}
 	 */
 	setTransform: function(a, b, c, d, e, f) {
 		var me = this;
@@ -296,6 +317,7 @@ Matrix.prototype = {
 	 * Translate current matrix accumulative.
 	 * @param {number} tx - translation for x
 	 * @param {number} ty - translation for y
+	 * @returns {Matrix}
 	 */
 	translate: function(tx, ty) {
 		return this._t(1, 0, 0, 1, tx, ty)
@@ -304,6 +326,7 @@ Matrix.prototype = {
 	/**
 	 * Translate current matrix on x axis accumulative.
 	 * @param {number} tx - translation for x
+	 * @returns {Matrix}
 	 */
 	translateX: function(tx) {
 		return this._t(1, 0, 0, 1, tx, 0)
@@ -312,19 +335,22 @@ Matrix.prototype = {
 	/**
 	 * Translate current matrix on y axis accumulative.
 	 * @param {number} ty - translation for y
+	 * @returns {Matrix}
 	 */
 	translateY: function(ty) {
 		return this._t(1, 0, 0, 1, 0, ty)
 	},
 
 	/**
-	 * Multiplies current matrix with new matrix values.
+	 * Multiplies current matrix with new matrix values. Also see [`multiply()`]{@link Matrix#multiply}.
+	 *
 	 * @param {number} a2 - scale x
 	 * @param {number} b2 - shear y
 	 * @param {number} c2 - shear x
 	 * @param {number} d2 - scale y
 	 * @param {number} e2 - translate x
 	 * @param {number} f2 - translate y
+	 * @returns {Matrix}
 	 */
 	transform: function(a2, b2, c2, d2, e2, f2) {
 
@@ -363,16 +389,15 @@ Matrix.prototype = {
 	/**
 	 * Divide this matrix on input matrix which must be invertible.
 	 * @param {Matrix} m - matrix to divide on (divisor)
+	 * @throws Exception is input matrix is not invertible
 	 * @returns {Matrix}
 	 */
 	divide: function(m) {
 
 		if (!m.isInvertible())
-			throw "Input matrix is not invertible";
+			throw "Matrix not invertible";
 
-		var im = m.inverse();
-
-		return this._t(im.a, im.b, im.c, im.d, im.e, im.f)
+		return this.multiply(m.inverse())
 	},
 
 	/**
@@ -399,12 +424,13 @@ Matrix.prototype = {
 	 * Context from parent matrix is not applied to the returned matrix.
 	 *
 	 * @param {boolean} [cloneContext=false] - clone current context to resulting matrix
-	 * @returns {Matrix}
+	 * @throws Exception is input matrix is not invertible
+	 * @returns {Matrix} - new Matrix instance
 	 */
 	inverse: function(cloneContext) {
 
 		var me = this,
-			m = cloneContext ? new Matrix(me.context) : new Matrix(),
+			m  = new Matrix(cloneContext ? me.context : null),
 			dt = me.determinant();
 
 		if (me._q(dt, 0))
@@ -422,23 +448,24 @@ Matrix.prototype = {
 
 	/**
 	 * Interpolate this matrix with another and produce a new matrix.
-	 * t is a value in the range [0.0, 1.0] where 0 is this instance and
-	 * 1 is equal to the second matrix. The t value is not constrained.
+	 * `t` is a value in the range [0.0, 1.0] where 0 is this instance and
+	 * 1 is equal to the second matrix. The `t` value is not clamped.
 	 *
 	 * Context from parent matrix is not applied to the returned matrix.
 	 *
-	 * Note: this interpolation is naive. For animation use the
-	 * intrpolateAnim() method instead.
+	 * Note: this interpolation is naive. For animation containing rotation,
+	 * shear or skew use the [`interpolateAnim()`]{@link Matrix#interpolateAnim} method instead
+	 * to avoid unintended flipping.
 	 *
 	 * @param {Matrix} m2 - the matrix to interpolate with.
 	 * @param {number} t - interpolation [0.0, 1.0]
 	 * @param {CanvasRenderingContext2D} [context] - optional context to affect
-	 * @returns {Matrix} - new instance with the interpolated result
+	 * @returns {Matrix} - new Matrix instance with the interpolated result
 	 */
 	interpolate: function(m2, t, context) {
 
 		var me = this,
-			m = context ? new Matrix(context) : new Matrix();
+			m  = context ? new Matrix(context) : new Matrix();
 
 		m.a = me.a + (m2.a - me.a) * t;
 		m.b = me.b + (m2.b - me.b) * t;
@@ -452,10 +479,13 @@ Matrix.prototype = {
 
 	/**
 	 * Interpolate this matrix with another and produce a new matrix.
-	 * t is a value in the range [0.0, 1.0] where 0 is this instance and
-	 * 1 is equal to the second matrix. The t value is not constrained.
+	 * `t` is a value in the range [0.0, 1.0] where 0 is this instance and
+	 * 1 is equal to the second matrix. The `t` value is not constrained.
 	 *
 	 * Context from parent matrix is not applied to the returned matrix.
+	 *
+	 * To obtain easing `t` can be preprocessed using easing-functions
+	 * before being passed to this method.
 	 *
 	 * Note: this interpolation method uses decomposition which makes
 	 * it suitable for animations (in particular where rotation takes
@@ -464,22 +494,24 @@ Matrix.prototype = {
 	 * @param {Matrix} m2 - the matrix to interpolate with.
 	 * @param {number} t - interpolation [0.0, 1.0]
 	 * @param {CanvasRenderingContext2D} [context] - optional context to affect
-	 * @returns {Matrix} - new instance with the interpolated result
+	 * @returns {Matrix} - new Matrix instance with the interpolated result
 	 */
 	interpolateAnim: function(m2, t, context) {
 
-		var	m = context ? new Matrix(context) : new Matrix(),
-			d1 = this.decompose(),
-			d2 = m2.decompose(),
-		   	t1 = d1.translate,
-			s1 = d1.scale,
-			rotation = d1.rotation + (d2.rotation - d1.rotation) * t,
-			translateX = t1.x + (d2.translate.x - t1.x) * t,
-			translateY = t1.y + (d2.translate.y - t1.y) * t,
-			scaleX = s1.x + (d2.scale.x - s1.x) * t,
-			scaleY = s1.y + (d2.scale.y - s1.y) * t
+		var m          = new Matrix(context ? context : null),
+			d1         = this.decompose(),
+			d2         = m2.decompose(),
+			t1         = d1.translate,
+			t2         = d2.translate,
+			s1         = d1.scale,
+			rotation   = d1.rotation + (d2.rotation - d1.rotation) * t,
+			translateX = t1.x + (t2.x - t1.x) * t,
+			translateY = t1.y + (t2.y - t1.y) * t,
+			scaleX     = s1.x + (d2.scale.x - s1.x) * t,
+			scaleY     = s1.y + (d2.scale.y - s1.y) * t
 			;
 
+		// QR order (t-r-s-sk)
 		m.translate(translateX, translateY);
 		m.rotate(rotation);
 		m.scale(scaleX, scaleY);
@@ -490,67 +522,67 @@ Matrix.prototype = {
 
 	/**
 	 * Decompose the current matrix into simple transforms using either
-	 * QR (default) or LU decomposition. Code adapted from
-	 * http://www.maths-informatique-jeux.com/blog/frederic/?post/2013/12/01/Decomposition-of-2D-transform-matrices
+	 * QR (default) or LU decomposition.
 	 *
 	 * The result must be applied in the following order to reproduce the current matrix:
 	 *
 	 *     QR: translate -> rotate -> scale -> skew
-	 *     LU: translate -> skewY  -> scale -> skew
+	 *     LU: translate -> skew   -> scale -> skew
 	 *
 	 * @param {boolean} [useLU=false] - set to true to use LU rather than QR algorithm
 	 * @returns {*} - an object containing current decomposed values (rotate, skew, scale, translate)
+	 * @see {@link http://www.maths-informatique-jeux.com/blog/frederic/?post/2013/12/01/Decomposition-of-2D-transform-matrices|Adoption based on this code}
 	 */
 	decompose: function(useLU) {
 
-		var me = this,
-			a = me.a,
-			b = me.b,
-			c = me.c,
-			d = me.d,
-			acos = Math.acos,
-			atan = Math.atan,
-			sqrt = Math.sqrt,
-			pi = Math.PI,
+		var me        = this,
+			a         = me.a,
+			b         = me.b,
+			c         = me.c,
+			d         = me.d,
+			acos      = Math.acos,
+			atan      = Math.atan,
+			sqrt      = Math.sqrt,
+			pi        = Math.PI,
 
 			translate = {x: me.e, y: me.f},
 			rotation  = 0,
 			scale     = {x: 1, y: 1},
 			skew      = {x: 0, y: 0},
 
-			determ = a * d - b * c;	// determinant(), skip DRY here...
+			determ    = a * d - b * c;	// determinant(), skip DRY here...
 
 		if (useLU) {
 			if (a) {
-				skew = {x:atan(c/a), y:atan(b/a)};
-				scale = {x:a, y:determ/a};
+				skew = {x: atan(c / a), y: atan(b / a)};
+				scale = {x: a, y: determ / a};
 			}
 			else if (b) {
 				rotation = pi * 0.5;
-				scale = {x:b, y:determ/b};
-				skew.x = atan(d/b);
+				scale = {x: b, y: determ / b};
+				skew.x = atan(d / b);
 			}
 			else { // a = b = 0
-				scale = {x:c, y:d};
+				scale = {x: c, y: d};
 				skew.x = pi * 0.25;
 			}
 		}
 		else {
 			// Apply the QR-like decomposition.
 			if (a || b) {
-				var r = sqrt(a*a + b*b);
-				rotation = b > 0 ? acos(a/r) : -acos(a/r);
-				scale = {x:r, y:determ/r};
-				skew.x = atan((a*c + b*d) / (r*r));
+				var r = sqrt(a * a + b * b);
+				rotation = b > 0 ? acos(a / r) : -acos(a / r);
+				scale = {x: r, y: determ / r};
+				skew.x = atan((a * c + b * d) / (r * r));
 			}
 			else if (c || d) {
-				var s = sqrt(c*c + d*d);
-				rotation = pi * 0.5 - (d > 0 ? acos(-c/s) : -acos(c/s));
-				scale = {x:determ/s, y:s};
-				skew.y = atan((a*c + b*d) / (s*s));
+				var s = sqrt(c * c + d * d);
+				rotation = pi * 0.5 - (d > 0 ? acos(-c / s) : -acos(c / s));
+				scale = {x: determ / s, y: s};
+				skew.y = atan((a * c + b * d) / (s * s));
 			}
 			else { // a = b = c = d = 0
-				scale = {x:0, y:0};		// = invalid matrix
+				scale = {x: 0, y: 0};		// = invalid matrix
 			}
 		}
 
@@ -566,12 +598,12 @@ Matrix.prototype = {
 	 * Returns the determinant of the current matrix.
 	 * @returns {number}
 	 */
-	determinant : function() {
+	determinant: function() {
 		return this.a * this.d - this.b * this.c
 	},
 
 	/**
-	 * Apply current matrix to x and y point.
+	 * Apply current matrix to `x` and `y` of a point.
 	 * Returns a point object.
 	 *
 	 * @param {number} x - value for x
@@ -594,14 +626,15 @@ Matrix.prototype = {
 	 *
 	 * A point object is an object literal:
 	 *
-	 * {x: x, y: y}
+	 *     {x: x, y: y}
 	 *
 	 * so an array would contain either:
 	 *
-	 * [{x: x1, y: y1}, {x: x2, y: y2}, ... {x: xn, y: yn}]
+	 *     [{x: x1, y: y1}, {x: x2, y: y2}, ... {x: xn, y: yn}]
 	 *
 	 * or
-	 * [x1, y1, x2, y2, ... xn, yn]
+	 *
+	 *     [x1, y1, x2, y2, ... xn, yn]
 	 *
 	 * @param {Array} points - array with point objects or pairs
 	 * @returns {Array} A new array with transformed points
@@ -633,7 +666,7 @@ Matrix.prototype = {
 	 * Apply current matrix to a typed array with point pairs. Although
 	 * the input array may be an ordinary array, this method is intended
 	 * for more performant use where typed arrays are used. The returned
-	 * array is regardless always returned as a Float32Array.
+	 * array is regardless always returned as a `Float32Array`.
 	 *
 	 * @param {*} points - (typed) array with point pairs
 	 * @param {boolean} [use64=false] - use Float64Array instead of Float32Array
@@ -646,7 +679,7 @@ Matrix.prototype = {
 			mxPoints = use64 ? new Float64Array(l) : new Float32Array(l);
 
 		while(i < l) {
-			p = this.applyToPoint(points[i], points[i+1]);
+			p = this.applyToPoint(points[i], points[i + 1]);
 			mxPoints[i++] = p.x;
 			mxPoints[i++] = p.y;
 		}
@@ -670,16 +703,16 @@ Matrix.prototype = {
 
 	/**
 	 * Returns true if matrix is an identity matrix (no transforms applied).
-	 * @returns {boolean} True if identity (not transformed)
+	 * @returns {boolean}
 	 */
 	isIdentity: function() {
 		var me = this;
 		return me._q(me.a, 1) &&
-			   me._q(me.b, 0) &&
-			   me._q(me.c, 0) &&
-			   me._q(me.d, 1) &&
-			   me._q(me.e, 0) &&
-			   me._q(me.f, 0)
+			me._q(me.b, 0) &&
+			me._q(me.c, 0) &&
+			me._q(me.d, 1) &&
+			me._q(me.e, 0) &&
+			me._q(me.f, 0)
 	},
 
 	/**
@@ -692,6 +725,7 @@ Matrix.prototype = {
 
 	/**
 	 * Test if matrix is valid (here meaning the scale values are non-zero).
+	 * @returns {boolean}
 	 */
 	isValid: function() {
 		return !(this.a * this.d)
@@ -708,18 +742,18 @@ Matrix.prototype = {
 		var me = this,
 			q = me._q;
 
-		return q(me.a, m.a) &&
-			   q(me.b, m.b) &&
-			   q(me.c, m.c) &&
-			   q(me.d, m.d) &&
-			   q(me.e, m.e) &&
-			   q(me.f, m.f)
+		return  q(me.a, m.a) &&
+				q(me.b, m.b) &&
+				q(me.c, m.c) &&
+				q(me.d, m.d) &&
+				q(me.e, m.e) &&
+				q(me.f, m.f)
 	},
 
 	/**
 	 * Clones current instance and returning a new matrix.
 	 * @param {boolean} [noContext=false] don't clone context reference if true
-	 * @returns {Matrix}
+	 * @returns {Matrix} - a new Matrix instance with identical transformations as this instance
 	 */
 	clone: function(noContext) {
 		return new Matrix(noContext ? null : this.context).multiply(this)
@@ -742,7 +776,7 @@ Matrix.prototype = {
 	 */
 	toTypedArray: function(use64) {
 
-		var a = use64 ? new Float64Array(6) : new Float32Array(6),
+		var a  = use64 ? new Float64Array(6) : new Float32Array(6),
 			me = this;
 
 		a[0] = me.a;
@@ -757,6 +791,8 @@ Matrix.prototype = {
 
 	/**
 	 * Generates a string that can be used with CSS `transform`.
+	 * @example
+	 *     element.style.transform = m.toCSS();
 	 * @returns {string}
 	 */
 	toCSS: function() {
@@ -764,12 +800,14 @@ Matrix.prototype = {
 	},
 
 	/**
-	 * Generates a matrix3d() string that can be used with CSS `transform`.
+	 * Generates a `matrix3d()` string that can be used with CSS `transform`.
 	 * Although the matrix is for 2D use you may see performance benefits
 	 * on some devices using a 3D CSS transform instead of a 2D.
+	 * @example
+	 *     element.style.transform = m.toCSS();
 	 * @returns {string}
 	 */
-	toCSS3D: function () {
+	toCSS3D: function() {
 		var me = this;
 		return "matrix3d(" + me.a + "," + me.b + ",0,0," + me.c + "," + me.d + ",0,0,0,0,1,0," + me.e + "," + me.f + ",0,1)"
 	},
@@ -785,19 +823,37 @@ Matrix.prototype = {
 
 	/**
 	 * Returns a string with current matrix as comma-separated list.
+	 * @param {number} [fixLen=4] - truncate decimal values to number of digits
 	 * @returns {string}
 	 */
-	toString: function() {
-		return "" + this.toArray()
+	toString: function(fixLen) {
+		var me = this;
+		fixLen = fixLen || 4;
+		return 	 "a=" + me.a.toFixed(fixLen) +
+				" b=" + me.b.toFixed(fixLen) +
+				" c=" + me.c.toFixed(fixLen) +
+				" d=" + me.d.toFixed(fixLen) +
+				" e=" + me.e.toFixed(fixLen) +
+				" f=" + me.f.toFixed(fixLen)
 	},
 
 	/**
-	 * Convert current matrix into a SVGMatrix. If SVGMatrix is not
-	 * supported, a null is returned.
+	 * Returns a string with current matrix as comma-separated values
+	 * string with line-end (CR+LF).
+	 * @returns {string}
+	 */
+	toCSV: function() {
+		return this.toArray().join() + "\r\n"
+	},
+
+	/**
+	 * Convert current matrix into a `SVGMatrix`. If `SVGMatrix` is not
+	 * supported, a `null` is returned.
 	 *
 	 * Note: BETA
 	 *
 	 * @returns {SVGMatrix}
+	 * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix|MDN / SVGMatrix}
 	 */
 	toSVGMatrix: function() {
 
@@ -839,6 +895,7 @@ Matrix.prototype = {
 
 	/**
 	 * Apply current absolute matrix to context if defined, to sync it.
+	 * @returns {Matrix}
 	 * @private
 	 */
 	_x: function() {

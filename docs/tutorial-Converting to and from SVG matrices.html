@@ -76,7 +76,7 @@
 <pre class="prettyprint source"><code>var svgMatrix = ...obtained from somewhere...,
     matrix;
 
-matrix = new Matrix().setTransform( svgMatrix.a, svgMatrix.b, svgMatrix.c, svgMatrix.d, svgMatrix.e, svgMatrix.f );</code></pre><p>or by using the new static <code>fromSVGMatrix()</code> method which acts as a short-hand for the same:</p>
+matrix = new Matrix(context).setTransform(svgMatrix.a, svgMatrix.b, svgMatrix.c, svgMatrix.d, svgMatrix.e, svgMatrix.f);</code></pre><p>or by using the new static <code>fromSVGMatrix()</code> method which acts as a short-hand for the same:</p>
 <pre class="prettyprint source"><code>var matrix = Matrix.fromSVGMatrix( svgMatrix );</code></pre><p>If you want to replicate a transformation sequence applied to a SVG shape, you can use the static method <code>fromSVGAnimList()</code>.</p>
 <p>Example - If you have this SVG in your markup:</p>
 <pre class="prettyprint source"><code>&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;>
