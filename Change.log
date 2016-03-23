@@ -1,6 +1,12 @@
 Change log for 2D Transformation Matrix
 ---------------------------------------
 
+2.2.0
+ADD: Create Matrix based on two triangles (S).
+ADD: Short-hand multiply() method for transform() to take a matrix object (S).
+
+Thanks to https://github.com/solendil (S) for contributions.
+
 2.1.0
 ADD: toCSS3D() (H)
 ADD: toTypedArray([use64bit])

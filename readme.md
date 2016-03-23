@@ -53,8 +53,8 @@ object.
 
 Using it with Node - use npm to install the package first, then:
 
-    var demo = require("transformation-matrix-js");
-    var matrix = new demo.Matrix();
+    var Matrix = require("transformation-matrix-js").Matrix;
+    var matrix = new Matrix();
 
 Some of the methods:
 
@@ -83,6 +83,7 @@ Some of the methods:
     matrix.skewY(ay);
     matrix.transform(a, b, c, d, e, f);
     matrix.setTransform(a, b, c, d, e, f);
+    matrix.multiply(matrix)				// multiply with another matrix
     matrix.divide();                    // divide matrix on another matrix
     matrix.divideScalar();              // divide matrix by scalar value
     matrix.inverse();
@@ -95,6 +96,10 @@ Some of the methods:
     matrix.reflectVector(x, y)         // reflects vector on normal (=current x-axis);
     matrix.concat(childMatrix)
 
+Static methods:
+
+	Matrix.fromTriangles(t1, t2);      // returns matrix needed to produce t2 from t1
+	
 Get current transform matrix properties:
 
     var a = matrix.a;	// scale x
@@ -173,6 +178,7 @@ Contributors
 - Ken "Fyrstenberg" Nilsen (creator) (https://github.com/epistemex)
 - Leon Sorokin (https://github.com/leeoniya)
 - Henry Ruhs (https://github.com/redaxmedia)
+- Matthieu Dumas (https://github.com/solendil)
 
 See Change.log for details.
 

@@ -1,5 +1,5 @@
 /*!
-	2D Transformation Matrix v2.1.0
+	2D Transformation Matrix v2.2.0
 	(c) Epistemex.com 2014-2016
 	License: MIT, header required.
 */
@@ -38,6 +38,79 @@ function Matrix(context) {
 	// reset canvas transformations to enable 100% sync.
 	if (context) context.setTransform(1, 0, 0, 1, 0, 0);
 }
+
+/**
+ * Returns a new matrix that transforms a triangle t1 into another triangle
+ * t2, or throws an exception if it is impossible.
+ *
+ * Note: the method can take both an array as well as a literal object.
+ * Just make sure that both arguments are of the same type.
+ *
+ * @param {{px: number, py: number, qx: number, qy: number, rx: number, ry: number}|Array} t1 - Object or array containing the three points for the triangle.
+ * For object use obj.px, obj.py, obj.qx, obj.qy, obj.rx and obj.ry. For arrays provide
+ * the points in the order [px, py, qx, qy, rx, ry]
+ * @param {{px: number, py: number, qx: number, qy: number, rx: number, ry: number}|Array} t2 - See description for t1.
+ * @returns {Matrix}
+ * @static
+ */
+Matrix.fromTriangles = function(t1, t2) {
+
+	/* A more efficient method, but breaks DRY with possibly too small gain?...
+	var t1px, t1py, t1qx, t1qy, t1rx, t1ry, t2px, t2py, t2qx, t2qy, t2rx, t2ry,
+		de1, de2, a, b, c, d, e, f;
+
+	if (Array.isArray(t1)) {
+		t1px = t1[0]; t1py = t1[1];
+		t1qx = t1[2]; t1qy = t1[3];
+		t1rx = t1[4]; t1ry = t1[5];
+		t2px = t2[0]; t2py = t2[1];
+		t2qx = t2[2]; t2qy = t2[3];
+		t2rx = t2[4]; t2ry = t2[5];
+	}
+	else {
+		t1px = t1.px; t1py = t1.py;
+		t1qx = t1.qx; t1qy = t1.qy;
+		t1rx = t1.rx; t1ry = t1.ry;
+		t2px = t2.px; t2py = t2.py;
+		t2qx = t2.qx; t2qy = t2.qy;
+		t2rx = t2.rx; t2ry = t2.ry;
+	}
+
+	de1 = (t1px - t1qx) * (t1py - t1ry) - (t1px - t1rx) * (t1py - t1qy);
+	de2 = (t1py - t1qy) * (t1px - t1rx) - (t1py - t1ry) * (t1px - t1qx);
+
+	if (!de1 || !de2)	//need epsilon error margin here!
+		throw "Cannot create matrix.";
+
+	a = ((t2px - t2qx) * (t1py - t1ry) - (t2px - t2rx) * (t1py - t1qy)) / de1;
+	b = ((t2px - t2qx) * (t1px - t1rx) - (t2px - t2rx) * (t1px - t1qx)) / de2;
+	c = t2px - a * t1px - b * t1py;
+	d = ((t2py - t2qy) * (t1py - t1ry) - (t2py - t2ry) * (t1py - t1qy)) / de1;
+	e = ((t2py - t2qy) * (t1px - t1rx) - (t2py - t2ry) * (t1px - t1qx)) / de2;
+	f = t2py - d * t1px - e * t1py;
+
+	return new Matrix().setTransform(a, d, b, e, c, f);*/
+
+	var std2t1 = new Matrix(),
+		std2t2 = new Matrix(),
+		t12std;
+
+	if (Array.isArray(t1)) {
+		std2t1.setTransform(t1[0] - t1[4], t1[1] - t1[5], t1[2] - t1[4], t1[3] - t1[5], t1[4], t1[5]);
+		std2t2.setTransform(t2[0] - t2[4], t2[1] - t2[5], t2[2] - t2[4], t2[3] - t2[5], t2[4], t2[5]);
+	}
+	else {
+		std2t1.setTransform(t1.px - t1.rx, t1.py - t1.ry, t1.qx - t1.rx, t1.qy - t1.ry, t1.rx, t1.ry);
+		std2t1.setTransform(t2.px - t2.rx, t2.py - t2.ry, t2.qx - t2.rx, t2.qy - t2.ry, t2.rx, t2.ry);
+	}
+
+	if (!std2t1.isInvertible())
+		throw "Cannot create matrix.";
+
+	t12std = std2t1.inverse();
+
+	return std2t2.multiply(t12std)
+};
 
 Matrix.prototype = {
 
@@ -281,6 +354,14 @@ Matrix.prototype = {
 		me.f = b1 * e2 + d1 * f2 + f1;
 
 		return me._x()
+	},
+
+	/**
+	 * Multiplies current matrix with another matrix.
+	 * @param {Matrix} m - the other matrix
+	 */
+	multiply: function(m) {
+		return this._t(m.a, m.b, m.c, m.d, m.e, m.f)
 	},
 
 	/**
