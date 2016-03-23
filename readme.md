@@ -1,20 +1,11 @@
 2D Affine Transformation Matrix
 ===============================
 
-An affine transformation matrix (3x3) class for JavaScript that performs
-various transformations such as rotate, scale, translate, skew, shear, add,
-subtract, multiply, divide, inverse, decomposing, animation, converting 
-to and from a SVG matrix, creating matrix from triangles and more (full 
-HTML documentation is included).
+An affine transformation matrix (3x3) class for JavaScript that performs various transformations such as rotate, scale, translate, skew, shear, add, subtract, multiply, divide, inverse, decomposing, animation, converting to and from a SVG matrix, creating matrix from triangles and more (full HTML documentation is included).
 
-It's primarily intended for situations where you need to track or create
-transforms and want to apply it permanently/manually to your own points
-and polygons.
+It's primarily intended for situations where you need to track or create transforms and want to apply it permanently/manually to your own points and polygons.
 
-The matrix can optionally synchronize a canvas 2D context so that the
-transformations on the canvas matches pixel perfect the local
-transformations of the Matrix object. It can be used to synchronize DOM
-elements using the toCSS() / toCSS3D() methods.
+The matrix can optionally synchronize a canvas 2D context so that the transformations on the canvas matches pixel perfect the local transformations of the Matrix object. It can be used to synchronize DOM elements using the toCSS() / toCSS3D() methods.
 
 Optional Node support.
 
@@ -53,9 +44,7 @@ Just include the script and create a new instance:
 
     var matrix = new Matrix([context]);
 
-You can supply an optional canvas 2D context as argument, which will be
-synchronized with the transformations that are applied to the matrix
-object.
+You can supply an optional canvas 2D context as argument, which will be synchronized with the transformations that are applied to the matrix object.
 
 Node
 ----
@@ -68,13 +57,13 @@ Using it with Node - use npm to install the package first, then:
 Quick overview
 --------------
 
-Static methods:
+**Static methods:**
 
 	Matrix.fromTriangles( t1, t2 );   		// returns matrix needed to produce t2 from t1
 	Matrix.fromSVGMatrix( svgMatrix ); 	 	// create new matrix from SVGMatrix
 	Matrix.fromSVGTransformList( tList );	// create new matrix from a SVG transform list
 
-Methods:
+**Methods:**
 
 	applyToArray(points)
 	applyToContext(context)
@@ -115,6 +104,7 @@ Methods:
 	toArray()
 	toCSS()
 	toCSS3D()
+	toCSV()
 	toJSON()
 	toString()
 	toSVGMatrix()						// creates a SVGMatrix from current transforms
@@ -124,7 +114,7 @@ Methods:
 	translateX(tx)
 	translateY(ty)
 
-Properties:
+**Properties:**
 
     a									// scale x
     b									// shear y
@@ -132,6 +122,9 @@ Properties:
     d									// scale y
     e									// translate x
     f									// translate y
+
+Examples
+--------
 
 Apply to a point:
 
@@ -147,8 +140,7 @@ or apply to a canvas context (other than optionally referenced in constructor):
 
     m.applyToContext( myContext );
 
-Get inverse transformation matrix (the matrix you need to apply to get back
-to an identity matrix from whatever the matrix contains):
+Get inverse transformation matrix (the matrix you need to apply to get back to an identity matrix from whatever the matrix contains):
 
     invMatrix = m.inverse();
 
@@ -166,10 +158,7 @@ returns a new matrix:
     im = m.interpolate( m2, t );   		// t = [0.0, 1.0]
     im = m.interpolateAnim( m2, t );
 
-The former does a naive interpolation which works fine with translate
-and scale. The latter is better suited when there is for example rotation
-involved to avoid "flipping" (and is what the browsers are using) utilizing
-decomposition.
+The former does a naive interpolation which works fine with translate and scale. The latter is better suited when there is for example rotation involved to avoid "flipping" (and is what the browsers are using) utilizing decomposition.
 
 Check if there is any transforms applied:
 

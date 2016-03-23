@@ -1,5 +1,5 @@
 /*!
-	2D Transformation Matrix v2.3.1
+	2D Transformation Matrix v2.3.2
 	(c) Epistemex.com 2014-2016
 	License: MIT, header required.
 */
@@ -58,7 +58,8 @@ function Matrix(context) {
 Matrix.fromTriangles = function(t1, t2, context) {
 
 	var m1 = new Matrix(),
-		m2 = new Matrix(context);
+		m2 = new Matrix(context),
+		r1, r2;
 
 	if (Array.isArray(t1)) {
 		var rx1 = t1[4], ry1 = t1[5], rx2 = t2[4], ry2 = t2[5];
@@ -379,7 +380,7 @@ Matrix.prototype = {
 
 	/**
 	 * Multiplies current matrix with source matrix.
-	 * @param {Matrix} m - source matrix to multiply with.
+	 * @param {Matrix|SVGMatrix} m - source matrix to multiply with.
 	 * @returns {Matrix}
 	 */
 	multiply: function(m) {
@@ -668,7 +669,7 @@ Matrix.prototype = {
 	 * for more performant use where typed arrays are used. The returned
 	 * array is regardless always returned as a `Float32Array`.
 	 *
-	 * @param {*} points - (typed) array with point pairs
+	 * @param {*} points - (typed) array with point pairs [x1, y1, ..., xn, yn]
 	 * @param {boolean} [use64=false] - use Float64Array instead of Float32Array
 	 * @returns {*} A new typed array with transformed points
 	 */
@@ -804,7 +805,7 @@ Matrix.prototype = {
 	 * Although the matrix is for 2D use you may see performance benefits
 	 * on some devices using a 3D CSS transform instead of a 2D.
 	 * @example
-	 *     element.style.transform = m.toCSS();
+	 *     element.style.transform = m.toCSS3D();
 	 * @returns {string}
 	 */
 	toCSS3D: function() {

@@ -1,6 +1,9 @@
 Change log for 2D Transformation Matrix
 ---------------------------------------
 
+2.3.2
+FIX: lost internal declaration in fromTriangles reinstated
+
 2.3.1
 ADD: toCSV() returns a comma-separated values string incl. line-ending
 CHG: fromSVGAnimList() (2.3.0) changed name to fromSVGTransformList()
