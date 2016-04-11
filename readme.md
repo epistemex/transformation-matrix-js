@@ -7,6 +7,8 @@ It's primarily intended for situations where you need to track or create transfo
 
 The matrix can optionally synchronize a canvas 2D context so that the transformations on the canvas matches pixel perfect the local transformations of the Matrix object. It can be used to synchronize DOM elements using the toCSS() / toCSS3D() methods.
 
+For browsers which support DOMMatrix and/or SVGMatrix it can be used as a supplementary framework to increase flexibility such as working directly with transformed points, perform addition transformation, interpolate animation and so forth.
+
 Optional Node support.
 
 No dependencies.
@@ -46,22 +48,30 @@ Just include the script and create a new instance:
 
 You can supply an optional canvas 2D context as argument, which will be synchronized with the transformations that are applied to the matrix object.
 
+
 Node
 ----
 
-Using it with Node - use npm to install the package first, then:
+Using it with Node: use **npm** to install the package first (see above), then
 
     var Matrix = require("transformation-matrix-js").Matrix;
     var m = new Matrix();
 
+
 Quick overview
 --------------
 
-**Static methods:**
+**Constructor**
+
+    var m = new Matrix();
+    
+**Static methods (alternatives to the constructor):**
 
 	Matrix.fromTriangles( t1, t2 );   		// returns matrix needed to produce t2 from t1
+	Matrix.fromDOMMatrix( domMatrix ); 	 	// create new matrix from DOMMatrix
 	Matrix.fromSVGMatrix( svgMatrix ); 	 	// create new matrix from SVGMatrix
 	Matrix.fromSVGTransformList( tList );	// create new matrix from a SVG transform list
+    Matrix.from(a, b, c, d, e, f);          // create and initialize a matrix
 
 **Methods:**
 
@@ -71,7 +81,7 @@ Quick overview
 	applyToTypedArray(points, use64)
 	clone(noContext)
 	concat(cm)
-	decompose(useLU)
+	decompose(useLU)					// breaks down the transform into individual components
 	determinant()
 	divide(m)
 	divideScalar(d)
@@ -99,6 +109,7 @@ Quick overview
 	shearX(sx)
 	shearY(sy)
 	skew(ax, ay)
+	skewDeg(ax, ay)
 	skewX(ax)
 	skewY(ay)
 	toArray()
@@ -107,6 +118,7 @@ Quick overview
 	toCSV()
 	toJSON()
 	toString()
+	toDOMMatrix()                       // creates a DOMMatrix from current transforms
 	toSVGMatrix()						// creates a SVGMatrix from current transforms
 	toTypedArray(use64)
 	transform(a2, b2, c2, d2, e2, f2)

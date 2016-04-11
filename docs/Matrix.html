@@ -515,6 +515,338 @@
         <dl>
             
 <dt>
+    <h4 class="name" id=".from"><span class="type-signature">&lt;static> </span>from<span class="signature">(a, b, c, d, e, f, <span class="optional">context</span>)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Create and transform a new matrix based on given matrix values.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>c</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>d</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>f</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">CanvasRenderingContext2D</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>optional canvas context to synchronize</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="Matrix.html">Matrix</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id=".fromSVGMatrix"><span class="type-signature">&lt;static> </span>fromSVGMatrix<span class="signature">(svgMatrix, <span class="optional">context</span>)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
     
     
@@ -1950,6 +2282,9 @@
             
                 
 <span class="param-type"><a href="Matrix.html">Matrix</a></span>
+|
+
+<span class="param-type">SVGMatrix</span>
 
 
             
@@ -2050,9 +2385,6 @@
     
     <div class="description">
         <p>Decompose the current matrix into simple transforms using either<br>QR (default) or LU decomposition.</p>
-<p>The result must be applied in the following order to reproduce the current matrix:</p>
-<pre class="prettyprint source"><code>QR: translate -> rotate -> scale -> skew
-LU: translate -> skew   -> scale -> skew</code></pre>
     </div>
     
 
@@ -2122,7 +2454,7 @@ LU: translate -> skew   -> scale -> skew</code></pre>
                 </td>
             
 
-            <td class="description last"><p>set to true to use LU rather than QR algorithm</p></td>
+            <td class="description last"><p>set to true to use LU rather than QR decomposition</p></td>
         </tr>
 
 	
@@ -2162,6 +2494,10 @@ LU: translate -> skew   -> scale -> skew</code></pre>
 	<dd class="tag-see">
 		<ul>
 			<li><a href="http://www.maths-informatique-jeux.com/blog/frederic/?post/2013/12/01/Decomposition-of-2D-transform-matrices">Adoption based on this code</a></li>
+			
+			<li><a href="https://en.wikipedia.org/wiki/QR_decomposition">More on QR decomposition</a></li>
+			
+			<li><a href="https://en.wikipedia.org/wiki/LU_decomposition">More on LU decomposition</a></li>
 			</ul>
 	</dd>
 	
@@ -2184,7 +2520,7 @@ LU: translate -> skew   -> scale -> skew</code></pre>
             
 <div class="param-desc">
     <ul>
-<li>an object containing current decomposed values (rotate, skew, scale, translate)</li>
+<li>an object containing current decomposed values (translate, rotation, scale, skew)</li>
 </ul>
 </div>
 
@@ -2799,6 +3135,9 @@ LU: translate -> skew   -> scale -> skew</code></pre>
             
                 
 <span class="param-type"><a href="Matrix.html">Matrix</a></span>
+|
+
+<span class="param-type">SVGMatrix</span>
 
 
             
@@ -3400,6 +3739,9 @@ LU: translate -> skew   -> scale -> skew</code></pre>
             
                 
 <span class="param-type"><a href="Matrix.html">Matrix</a></span>
+|
+
+<span class="param-type">SVGMatrix</span>
 
 
             
@@ -3663,7 +4005,7 @@ LU: translate -> skew   -> scale -> skew</code></pre>
     
     
     <div class="description">
-        <p>Test if matrix is valid (here meaning the scale values are non-zero).</p>
+        <p>The method is intended for situations where scale is accumulated<br>via multiplications, to detect situations where scale becomes<br>&quot;trapped&quot; with a value of zero. And in which case scale must be<br>set explicitly to a non-zero value.</p>
     </div>
     
 
@@ -5775,7 +6117,164 @@ LU: translate -> skew   -> scale -> skew</code></pre>
     
     
     <div class="description">
-        <p>Apply skew to the current matrix accumulative.</p>
+        <p>Apply skew to the current matrix accumulative. Angles in radians.<br>Also see <a href="Matrix.html#skewDeg"><code>skewDeg()</code></a>.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>ax</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>angle of skew for x</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>ay</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>angle of skew for y</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="Matrix.html">Matrix</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="skewDeg"><span class="type-signature"></span>skewDeg<span class="signature">(ax, ay)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Apply skew to the current matrix accumulative. Angles in degrees.<br>Also see <a href="Matrix.html#skew"><code>skew()</code></a>.</p>
     </div>
     
 
@@ -5932,7 +6431,7 @@ LU: translate -> skew   -> scale -> skew</code></pre>
     
     
     <div class="description">
-        <p>Apply skew for x to the current matrix accumulative.</p>
+        <p>Apply skew for x to the current matrix accumulative. Angles in radians.<br>Also see <a href="Matrix.html#skewDeg"><code>skewDeg()</code></a>.</p>
     </div>
     
 
@@ -6066,7 +6565,7 @@ LU: translate -> skew   -> scale -> skew</code></pre>
     
     
     <div class="description">
-        <p>Apply skew for y to the current matrix accumulative.</p>
+        <p>Apply skew for y to the current matrix accumulative. Angles in radians.<br>Also see <a href="Matrix.html#skewDeg"><code>skewDeg()</code></a>.</p>
     </div>
     
 
@@ -7730,7 +8229,7 @@ LU: translate -> skew   -> scale -> skew</code></pre>
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
-		on Wed Mar 23rd 2016 using the <a
+		on Fri Mar 25th 2016 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>

@@ -1,5 +1,5 @@
 /*!
-	2D Transformation Matrix v2.3.2
+	2D Transformation Matrix v2.6.0
 	(c) Epistemex.com 2014-2016
 	License: MIT, header required.
 */
@@ -91,6 +91,20 @@ Matrix.fromSVGMatrix = function(svgMatrix, context) {
 };
 
 /**
+ * Create a new matrix from a DOMMatrix
+ *
+ * @param {DOMMatrix} domMatrix - source DOMMatrix
+ * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
+ * @returns {Matrix}
+ * @static
+ * @see {@link https://drafts.fxtf.org/geometry/#dommatrix|MDN / DOMMatrix}
+ */
+Matrix.fromDOMMatrix = function(domMatrix, context) {
+	if (!domMatrix.is2D) throw "Cannot use 3D matrix.";
+	return new Matrix(context).multiply(domMatrix)
+};
+
+/**
  * Create a matrix from a transform list from an SVG shape. The list
  * can be for example baseVal (i.e. `shape.transform.baseVal`).
  *
@@ -113,13 +127,30 @@ Matrix.fromSVGTransformList = function(tList, context) {
 	return m
 };
 
+/**
+ * Create and transform a new matrix based on given matrix values.
+ *
+ * @param {number} a
+ * @param {number} b
+ * @param {number} c
+ * @param {number} d
+ * @param {number} e
+ * @param {number} f
+ * @param {CanvasRenderingContext2D} [context] - optional canvas context to synchronize
+ * @returns {Matrix}
+ * @static
+ */
+Matrix.from = function(a, b, c, d, e, f, context) {
+	return new Matrix(context).setTransform(a, b, c, d, e, f)
+};
+
 Matrix.prototype = {
 
 	/**
 	 * Concatenates transforms of this matrix onto the given child matrix and
 	 * returns a new matrix. This instance is used on left side.
 	 *
-	 * @param {Matrix} cm - child matrix to apply concatenation to
+	 * @param {Matrix|SVGMatrix} cm - child matrix to apply concatenation to
 	 * @returns {Matrix} - new Matrix instance
 	 */
 	concat: function(cm) {
@@ -266,7 +297,8 @@ Matrix.prototype = {
 	},
 
 	/**
-	 * Apply skew to the current matrix accumulative.
+	 * Apply skew to the current matrix accumulative. Angles in radians.
+	 * Also see [`skewDeg()`]{@link Matrix#skewDeg}.
 	 * @param {number} ax - angle of skew for x
 	 * @param {number} ay - angle of skew for y
 	 * @returns {Matrix}
@@ -276,7 +308,19 @@ Matrix.prototype = {
 	},
 
 	/**
-	 * Apply skew for x to the current matrix accumulative.
+	 * Apply skew to the current matrix accumulative. Angles in degrees.
+	 * Also see [`skew()`]{@link Matrix#skew}.
+	 * @param {number} ax - angle of skew for x
+	 * @param {number} ay - angle of skew for y
+	 * @returns {Matrix}
+	 */
+	skewDeg: function(ax, ay) {
+		return this.shear(Math.tan(ax / 180 * Math.PI), Math.tan(ay / 180 * Math.PI))
+	},
+
+	/**
+	 * Apply skew for x to the current matrix accumulative. Angles in radians.
+	 * Also see [`skewDeg()`]{@link Matrix#skewDeg}.
 	 * @param {number} ax - angle of skew for x
 	 * @returns {Matrix}
 	 */
@@ -285,7 +329,8 @@ Matrix.prototype = {
 	},
 
 	/**
-	 * Apply skew for y to the current matrix accumulative.
+	 * Apply skew for y to the current matrix accumulative. Angles in radians.
+	 * Also see [`skewDeg()`]{@link Matrix#skewDeg}.
 	 * @param {number} ay - angle of skew for y
 	 * @returns {Matrix}
 	 */
@@ -458,7 +503,7 @@ Matrix.prototype = {
 	 * shear or skew use the [`interpolateAnim()`]{@link Matrix#interpolateAnim} method instead
 	 * to avoid unintended flipping.
 	 *
-	 * @param {Matrix} m2 - the matrix to interpolate with.
+	 * @param {Matrix|SVGMatrix} m2 - the matrix to interpolate with.
 	 * @param {number} t - interpolation [0.0, 1.0]
 	 * @param {CanvasRenderingContext2D} [context] - optional context to affect
 	 * @returns {Matrix} - new Matrix instance with the interpolated result
@@ -525,14 +570,11 @@ Matrix.prototype = {
 	 * Decompose the current matrix into simple transforms using either
 	 * QR (default) or LU decomposition.
 	 *
-	 * The result must be applied in the following order to reproduce the current matrix:
-	 *
-	 *     QR: translate -> rotate -> scale -> skew
-	 *     LU: translate -> skew   -> scale -> skew
-	 *
-	 * @param {boolean} [useLU=false] - set to true to use LU rather than QR algorithm
-	 * @returns {*} - an object containing current decomposed values (rotate, skew, scale, translate)
+	 * @param {boolean} [useLU=false] - set to true to use LU rather than QR decomposition
+	 * @returns {*} - an object containing current decomposed values (translate, rotation, scale, skew)
 	 * @see {@link http://www.maths-informatique-jeux.com/blog/frederic/?post/2013/12/01/Decomposition-of-2D-transform-matrices|Adoption based on this code}
+	 * @see {@link https://en.wikipedia.org/wiki/QR_decomposition|More on QR decomposition}
+	 * @see {@link https://en.wikipedia.org/wiki/LU_decomposition|More on LU decomposition}
 	 */
 	decompose: function(useLU) {
 
@@ -583,14 +625,14 @@ Matrix.prototype = {
 				skew.y = atan((a * c + b * d) / (s * s));
 			}
 			else { // a = b = c = d = 0
-				scale = {x: 0, y: 0};		// = invalid matrix
+				scale = {x: 0, y: 0};
 			}
 		}
 
 		return {
-			scale    : scale,
 			translate: translate,
 			rotation : rotation,
+			scale    : scale,
 			skew     : skew
 		}
 	},
@@ -725,7 +767,11 @@ Matrix.prototype = {
 	},
 
 	/**
-	 * Test if matrix is valid (here meaning the scale values are non-zero).
+	 * The method is intended for situations where scale is accumulated
+	 * via multiplications, to detect situations where scale becomes
+	 * "trapped" with a value of zero. And in which case scale must be
+	 * set explicitly to a non-zero value.
+	 *
 	 * @returns {boolean}
 	 */
 	isValid: function() {
@@ -735,7 +781,7 @@ Matrix.prototype = {
 	/**
 	 * Compares current matrix with another matrix. Returns true if equal
 	 * (within epsilon tolerance).
-	 * @param {Matrix} m - matrix to compare this matrix with
+	 * @param {Matrix|SVGMatrix} m - matrix to compare this matrix with
 	 * @returns {boolean}
 	 */
 	isEqual: function(m) {
@@ -845,6 +891,27 @@ Matrix.prototype = {
 	 */
 	toCSV: function() {
 		return this.toArray().join() + "\r\n"
+	},
+
+	/**
+	 * Convert current matrix into a `DOMMatrix`. If `DOMMatrix` is not
+	 * supported, a `null` is returned.
+	 *
+	 * @returns {DOMMatrix}
+	 * @see {@link https://drafts.fxtf.org/geometry/#dommatrix|MDN / SVGMatrix}
+	 */
+	toDOMMatrix: function() {
+		var m = null;
+		if ("DOMMatrix" in window) {
+			m = new DOMMatrix();
+			m.a = this.a;
+			m.b = this.b;
+			m.c = this.c;
+			m.d = this.d;
+			m.e = this.e;
+			m.f = this.f;
+		}
+		return m
 	},
 
 	/**

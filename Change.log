@@ -1,6 +1,16 @@
 Change log for 2D Transformation Matrix
 ---------------------------------------
 
+2.6.0
+ADD: fromDOMMatrix() static method
+ADD: toDOMMatrix()
+
+2.5.0
+ADD: Matrix.from(a,b,c,d,e,f)
+
+2.4.0
+ADD: skewDeg() - helper method to take degrees instead of radians
+
 2.3.2
 FIX: lost internal declaration in fromTriangles reinstated
 
