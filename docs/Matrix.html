@@ -515,7 +515,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id=".from"><span class="type-signature">&lt;static> </span>from<span class="signature">(a, b, c, d, e, f, <span class="optional">context</span>)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
+    <h4 class="name" id=".from"><span class="type-signature">&lt;static> </span>from<span class="signature">(a, <span class="optional">b</span>, <span class="optional">c</span>, <span class="optional">d</span>, <span class="optional">e</span>, <span class="optional">f</span>, <span class="optional">context</span>)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
     
     
 </dt>
@@ -523,7 +523,7 @@
     
     
     <div class="description">
-        <p>Create and transform a new matrix based on given matrix values.</p>
+        <p>Create and transform a new matrix based on given matrix values, or<br>provide SVGMatrix or a (2D) DOMMatrix or another instance of a Matrix<br>(in fact, any 2D matrix object using properties a-f can be used as source).</p>
     </div>
     
 
@@ -566,6 +566,15 @@
             
                 
 <span class="param-type">number</span>
+|
+
+<span class="param-type">DOMMatrix</span>
+|
+
+<span class="param-type">SVGMatrix</span>
+|
+
+<span class="param-type"><a href="Matrix.html">Matrix</a></span>
 
 
             
@@ -583,7 +592,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>number representing a in [a-f], or a Matrix object containing properties a-f</p></td>
         </tr>
 
 	
@@ -597,6 +606,9 @@
             
                 
 <span class="param-type">number</span>
+|
+
+<span class="param-type">CanvasRenderingContext2D</span>
 
 
             
@@ -604,6 +616,8 @@
 
             
                 <td class="attributes">
+                
+                    &lt;optional><br>
                 
 
                 
@@ -614,7 +628,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>b property if a is not a matrix object, or optional canvas 2D context</p></td>
         </tr>
 
 	
@@ -635,6 +649,8 @@
 
             
                 <td class="attributes">
+                
+                    &lt;optional><br>
                 
 
                 
@@ -667,6 +683,8 @@
             
                 <td class="attributes">
                 
+                    &lt;optional><br>
+                
 
                 
 
@@ -698,6 +716,8 @@
             
                 <td class="attributes">
                 
+                    &lt;optional><br>
+                
 
                 
 
@@ -728,6 +748,8 @@
 
             
                 <td class="attributes">
+                
+                    &lt;optional><br>
                 
 
                 
@@ -842,189 +864,11 @@
         
     
     
-</dd>
-
+        <h5>Example</h5>
         
-            
-<dt>
-    <h4 class="name" id=".fromSVGMatrix"><span class="type-signature">&lt;static> </span>fromSVGMatrix<span class="signature">(svgMatrix, <span class="optional">context</span>)</span><span class="type-signature"> &rarr; {<a href="Matrix.html">Matrix</a>}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Create a new matrix from a SVGMatrix</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-		<th>Argument</th>
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>svgMatrix</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">SVGMatrix</span>
+    <pre class="sunlight-highlight-javascript">var m = Matrix.from(1, 0.2, 0, 2, 120, 97);    var m = Matrix.from(domMatrix, ctx);    var m = Matrix.from(svgMatrix);    var m = Matrix.from(matrix);</pre>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>source SVG Matrix</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>context</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">CanvasRenderingContext2D</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>optional canvas 2D context to use for the matrix</p></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-	<dt class="tag-see">See:</dt>
-	<dd class="tag-see">
-		<ul>
-			<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix">MDN / SVGMatrix</a></li>
-			</ul>
-	</dd>
-	
-
-	
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="Matrix.html">Matrix</a></span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
     
 </dd>
 
@@ -1288,7 +1132,7 @@
 
             
 
-            <td class="description last"><p>Object or array containing the three points for the triangle.<br>For object use obj.px, obj.py, obj.qx, obj.qy, obj.rx and obj.ry. For arrays provide the points in the order [px, py, qx, qy, rx, ry]</p></td>
+            <td class="description last"><p>Object or array containing the three points for the triangle.<br>For object use obj.px, obj.py, obj.qx, obj.qy, obj.rx and obj.ry. For arrays provide the points in the order [px, py, qx, qy, rx, ry], or as point array [{x:,y:}, {x:,y:}, {x:,y:}]</p></td>
         </tr>
 
 	
@@ -7043,6 +6887,98 @@
         
             
 <dt>
+    <h4 class="name" id="toDOMMatrix"><span class="type-signature"></span>toDOMMatrix<span class="signature">()</span><span class="type-signature"> &rarr; {DOMMatrix}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Convert current matrix into a <code>DOMMatrix</code>. If <code>DOMMatrix</code> is not<br>supported, a <code>null</code> is returned.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+	<dt class="tag-see">See:</dt>
+	<dd class="tag-see">
+		<ul>
+			<li><a href="https://drafts.fxtf.org/geometry/#dommatrix">MDN / SVGMatrix</a></li>
+			</ul>
+	</dd>
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">DOMMatrix</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="toJSON"><span class="type-signature"></span>toJSON<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
     
     
@@ -8229,7 +8165,7 @@
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
-		on Fri Mar 25th 2016 using the <a
+		on Wed Apr 13th 2016 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>

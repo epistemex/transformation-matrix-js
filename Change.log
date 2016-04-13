@@ -1,6 +1,10 @@
 Change log for 2D Transformation Matrix
 ---------------------------------------
 
+2.6.5
+ADD. Support for point objects in array for fromTriangles()
+CHG: Matrix.from() can now take DOMMatrix, SVGMatrix and Matrix. Will replace fromSVGMatrix/fromDOMMatrix.
+
 2.6.0
 ADD: fromDOMMatrix() static method
 ADD: toDOMMatrix()

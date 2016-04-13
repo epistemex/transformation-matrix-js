@@ -1,5 +1,5 @@
 /*!
-	2D Transformation Matrix v2.6.0
+	2D Transformation Matrix v2.6.5
 	(c) Epistemex.com 2014-2016
 	License: MIT, header required.
 */
@@ -48,7 +48,7 @@ function Matrix(context) {
  * Just make sure that both arguments (`t1`, `t2`) are of the same type.
  *
  * @param {{px: number, py: number, qx: number, qy: number, rx: number, ry: number}|Array} t1 - Object or array containing the three points for the triangle.
- * For object use obj.px, obj.py, obj.qx, obj.qy, obj.rx and obj.ry. For arrays provide the points in the order [px, py, qx, qy, rx, ry]
+ * For object use obj.px, obj.py, obj.qx, obj.qy, obj.rx and obj.ry. For arrays provide the points in the order [px, py, qx, qy, rx, ry], or as point array [{x:,y:}, {x:,y:}, {x:,y:}]
  * @param {{px: number, py: number, qx: number, qy: number, rx: number, ry: number}|Array} t2 - See description for t1.
  * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
  * @returns {Matrix}
@@ -59,12 +59,19 @@ Matrix.fromTriangles = function(t1, t2, context) {
 
 	var m1 = new Matrix(),
 		m2 = new Matrix(context),
-		r1, r2;
+		r1, r2, rx1, ry1, rx2, ry2;
 
 	if (Array.isArray(t1)) {
-		var rx1 = t1[4], ry1 = t1[5], rx2 = t2[4], ry2 = t2[5];
-		r1 = [t1[0] - rx1, t1[1] - ry1, t1[2] - rx1, t1[3] - ry1, rx1, ry1];
-		r2 = [t2[0] - rx2, t2[1] - ry2, t2[2] - rx2, t2[3] - ry2, rx2, ry2]
+		if (typeof t1[0] === "number") {
+			rx1 = t1[4]; ry1 = t1[5]; rx2 = t2[4]; ry2 = t2[5];
+			r1 = [t1[0] - rx1, t1[1] - ry1, t1[2] - rx1, t1[3] - ry1, rx1, ry1];
+			r2 = [t2[0] - rx2, t2[1] - ry2, t2[2] - rx2, t2[3] - ry2, rx2, ry2]
+		}
+		else {
+			rx1 = t1[2].x; ry1 = t1[2].y; rx2 = t2[2].x; ry2 = t2[2].y;
+			r1 = [t1[0].x - rx1, t1[0].y - ry1, t1[1].x - rx1, t1[1].y - ry1, rx1, ry1];
+			r2 = [t2[0].x - rx2, t2[0].y - ry2, t2[1].x - rx2, t1[1].y - ry2, rx2, ry2]
+		}
 	}
 	else {
 		r1 = [t1.px - t1.rx, t1.py - t1.ry, t1.qx - t1.rx, t1.qy - t1.ry, t1.rx, t1.ry];
@@ -84,9 +91,11 @@ Matrix.fromTriangles = function(t1, t2, context) {
  * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
  * @returns {Matrix}
  * @static
+ * @private
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix|MDN / SVGMatrix}
  */
 Matrix.fromSVGMatrix = function(svgMatrix, context) {
+	console.warn("Obsolete. Use Matrix.from()");
 	return new Matrix(context).multiply(svgMatrix)
 };
 
@@ -97,9 +106,11 @@ Matrix.fromSVGMatrix = function(svgMatrix, context) {
  * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
  * @returns {Matrix}
  * @static
+ * @private
  * @see {@link https://drafts.fxtf.org/geometry/#dommatrix|MDN / DOMMatrix}
  */
 Matrix.fromDOMMatrix = function(domMatrix, context) {
+	console.warn("Obsolete. Use Matrix.from()");
 	if (!domMatrix.is2D) throw "Cannot use 3D matrix.";
 	return new Matrix(context).multiply(domMatrix)
 };
@@ -128,20 +139,41 @@ Matrix.fromSVGTransformList = function(tList, context) {
 };
 
 /**
- * Create and transform a new matrix based on given matrix values.
+ * Create and transform a new matrix based on given matrix values, or
+ * provide SVGMatrix or a (2D) DOMMatrix or another instance of a Matrix
+ * (in fact, any 2D matrix object using properties a-f can be used as source).
  *
- * @param {number} a
- * @param {number} b
- * @param {number} c
- * @param {number} d
- * @param {number} e
- * @param {number} f
+ * @example
+ *
+ *     var m = Matrix.from(1, 0.2, 0, 2, 120, 97);
+ *     var m = Matrix.from(domMatrix, ctx);
+ *     var m = Matrix.from(svgMatrix);
+ *     var m = Matrix.from(matrix);
+ *
+ * @param {number|DOMMatrix|SVGMatrix|Matrix} a - number representing a in [a-f], or a Matrix object containing properties a-f
+ * @param {number|CanvasRenderingContext2D} [b] - b property if a is not a matrix object, or optional canvas 2D context
+ * @param {number} [c]
+ * @param {number} [d]
+ * @param {number} [e]
+ * @param {number} [f]
  * @param {CanvasRenderingContext2D} [context] - optional canvas context to synchronize
  * @returns {Matrix}
  * @static
  */
 Matrix.from = function(a, b, c, d, e, f, context) {
-	return new Matrix(context).setTransform(a, b, c, d, e, f)
+
+	var m = new Matrix(context);
+
+	if (typeof a === "number")
+		m.setTransform(a, b, c, d, e, f);
+
+	else {
+		if (typeof a.is2D === "boolean" && !a.is2D) throw "Cannot use 3D DOMMatrix.";
+		if (b) m.context = b;
+		m.multiply(a)
+	}
+
+	return m
 };
 
 Matrix.prototype = {

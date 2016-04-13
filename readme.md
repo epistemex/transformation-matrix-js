@@ -68,10 +68,10 @@ Quick overview
 **Static methods (alternatives to the constructor):**
 
 	Matrix.fromTriangles( t1, t2 );   		// returns matrix needed to produce t2 from t1
-	Matrix.fromDOMMatrix( domMatrix ); 	 	// create new matrix from DOMMatrix
-	Matrix.fromSVGMatrix( svgMatrix ); 	 	// create new matrix from SVGMatrix
+    Matrix.from(a, b, c, d, e, f, ctx);     // create and initialize a matrix, or from DOMMatrix/SVGMatrix/Matrix
 	Matrix.fromSVGTransformList( tList );	// create new matrix from a SVG transform list
-    Matrix.from(a, b, c, d, e, f);          // create and initialize a matrix
+	Matrix.fromDOMMatrix( domMatrix ); 	 	// OBSOLETE, see from() - create new matrix from DOMMatrix
+	Matrix.fromSVGMatrix( svgMatrix ); 	 	// OBSOLETE, see from() - create new matrix from SVGMatrix
 
 **Methods:**
 
