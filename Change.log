@@ -1,8 +1,17 @@
 Change log for 2D Transformation Matrix
 ---------------------------------------
 
+2.7.0
+REM: fromSVGMatrix() and fromDOMMatrix(), which are replaced by from()
+FIX: Typo in fromTriangle() when using x/y objects in array
+ADD: Can now sync a DOM element
+ADD: applyToElement() with automatic browser prefix detection
+ADD: applyToObject() transfers setting of this instance to an external object (typical a matrix instance like Matrix/DOMMatrix/SVGMatrix/empty literal etc.)
+ADD: rotateFromVector() can now also take a vector object with properties x and y
+ADD: from() can take a vector for rotate, translate and/or scale. Support pre-translation.
+
 2.6.5
-ADD. Support for point objects in array for fromTriangles()
+ADD: Support for point objects in array for fromTriangles()
 CHG: Matrix.from() can now take DOMMatrix, SVGMatrix and Matrix. Will replace fromSVGMatrix/fromDOMMatrix.
 
 2.6.0

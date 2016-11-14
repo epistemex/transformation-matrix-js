@@ -89,19 +89,11 @@
 	function enterTheMatrix() {
 
 		//recalc all so we get absolute transform for the sake of demo (would be accumulative otherwise)
-		var m = new Matrix()
+		var m = new Matrix(null, dom)
 			.translate(dash.value("stx"), dash.value("sty"))
 			.rotateDeg(dash.value("srt"))
 			.scale(dash.value("ssx") * 0.01, dash.value("ssy") * 0.01)
 			.skewDeg(dash.value("skx"), dash.value("sky"));
-
-		// update DOM - brute-force prefix for now
-		dom.style.oTransform =
-		dom.style.msTransform =
-		dom.style.mozTransform =
-		dom.style.webkitTransform =
-		dom.style.transform =
-			(dash.value("use3D") ? m.toCSS3D() : m.toCSS());
 
 		dom.style.display = dash.value("showD") ? "block" : "none";
 

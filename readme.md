@@ -5,13 +5,14 @@ An affine transformation matrix (3x3) class for JavaScript that performs various
 
 It's primarily intended for situations where you need to track or create transforms and want to apply it permanently/manually to your own points and polygons.
 
-The matrix can optionally synchronize a canvas 2D context so that the transformations on the canvas matches pixel perfect the local transformations of the Matrix object. It can be used to synchronize DOM elements using the toCSS() / toCSS3D() methods.
+The matrix can optionally synchronize a canvas 2D context or a DOM element so that the transformations on the canvas matches pixel perfect the local transformations of the Matrix object.
 
 For browsers which support DOMMatrix and/or SVGMatrix it can be used as a supplementary framework to increase flexibility such as working directly with transformed points, perform addition transformation, interpolate animation and so forth.
 
-Optional Node support.
 
-No dependencies.
+*Automatic Node support when used in a node.js environment.*
+
+*No dependencies.*
 
 
 Install
@@ -44,9 +45,9 @@ Browser
 
 Just include the script and create a new instance:
 
-    var matrix = new Matrix([context]);
+    var matrix = new Matrix([context] [,domElement]);
 
-You can supply an optional canvas 2D context as argument, which will be synchronized with the transformations that are applied to the matrix object.
+You can supply an optional canvas 2D context and/or DOM element as arguments which will be synchronized with the transformations that are applied to the matrix object.
 
 
 Node
@@ -63,20 +64,24 @@ Quick overview
 
 **Constructor**
 
-    var m = new Matrix();
+    var m = new Matrix( [context] [,element] );
     
+Can optionally synchronize a canvas 2D context and/or a DOM element.
+
 **Static methods (alternatives to the constructor):**
 
+    Matrix.from( a, b, c, d, e, f );        // create a matrix from various sources
+    Matrix.from( DOMMatrix );
+    Matrix.from( SVGMatrix );
 	Matrix.fromTriangles( t1, t2 );   		// returns matrix needed to produce t2 from t1
-    Matrix.from(a, b, c, d, e, f, ctx);     // create and initialize a matrix, or from DOMMatrix/SVGMatrix/Matrix
 	Matrix.fromSVGTransformList( tList );	// create new matrix from a SVG transform list
-	Matrix.fromDOMMatrix( domMatrix ); 	 	// OBSOLETE, see from() - create new matrix from DOMMatrix
-	Matrix.fromSVGMatrix( svgMatrix ); 	 	// OBSOLETE, see from() - create new matrix from SVGMatrix
 
 **Methods:**
 
 	applyToArray(points)
 	applyToContext(context)
+	applyToElement(element, use3D)      // auto-detects browser prefix if any
+	applyToObject(obj)
 	applyToPoint(x, y)
 	applyToTypedArray(points, use64)
 	clone(noContext)
@@ -87,9 +92,9 @@ Quick overview
 	divideScalar(d)
 	flipX()
 	flipY()
-	interpolate(m2, t, context)
-	interpolateAnim(m2, t, context) 	// decomposed interpolation (prevents flipping)
-	inverse(cloneContext)
+	interpolate(m2, t, context, dom)
+	interpolateAnim(m2, t, context, dom) // decomposed interpolation (prevents flipping)
+	inverse(cloneContext, cloneElement)
 	isEqual(m)
 	isIdentity()
 	isInvertible()
@@ -101,6 +106,7 @@ Quick overview
 	rotateDeg(angle)
 	rotateFromVector(x, y)
 	scale(sx, sy)
+	scaleFromVector(x, y)               // uniform scale based on input vector (hypotenuse)
 	scaleU(f)							// uniform scale
 	scaleX(sx)
 	scaleY(sy)
@@ -170,7 +176,7 @@ returns a new matrix:
     im = m.interpolate( m2, t );   		// t = [0.0, 1.0]
     im = m.interpolateAnim( m2, t );
 
-The former does a naive interpolation which works fine with translate and scale. The latter is better suited when there is for example rotation involved to avoid "flipping" (and is what the browsers are using) utilizing decomposition.
+The former does a naive interpolation which works fine with translate and scale. The latter is better suited when there is rotation involved to avoid "flipping" utilizing decomposition.
 
 Check if there is any transforms applied:
 
@@ -189,9 +195,10 @@ Methods are chainable:
     // rotate, then translate
     m.rotateDeg(45).translate(100, 200);
 
-To synchronize a DOM element:
+To synchronize a DOM element you can either specify the DOM element in
+the constructor or synchronize manually (auto-detects browser prefix):
 
-    elem.style.transform = m.toCSS();  	// some browsers may need prefix
+    m.applyToElement( domElement );
 
 See documentation for full overview and usage.
 

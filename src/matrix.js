@@ -131,11 +131,11 @@ Matrix.fromSVGTransformList = function(tList, context, dom) {
  *
  * @example
  *
- *     var m = Matrix.from(1, 0.2, 0, 2, 120, 97);
- *     var m = Matrix.from(domMatrix, ctx);
- *     var m = Matrix.from(svgMatrix);
- *     var m = Matrix.from(matrix);
- *     var m = Matrix.from(vector [,pre-x] [,pre-y] [,doScale]);
+ * var m = Matrix.from(1, 0.2, 0, 2, 120, 97);
+ * var m = Matrix.from(domMatrix, ctx);
+ * var m = Matrix.from(svgMatrix);
+ * var m = Matrix.from(matrix);
+ * var m = Matrix.from(vector [,pre-x] [,pre-y] [,doScale]);
  *
  * @param {*} a - number representing a in [a-f], or a Matrix object containing properties a-f. Vector is given as an object with properties x and y.
  * @param {*} [b] - b property if a is not a matrix object, or optional canvas 2D context.
@@ -610,18 +610,12 @@ Matrix.prototype = {
 			d2         = m2.decompose(),
 			t1         = d1.translate,
 			t2         = d2.translate,
-			s1         = d1.scale,
-			rotation   = d1.rotation + (d2.rotation - d1.rotation) * t,
-			translateX = t1.x + (t2.x - t1.x) * t,
-			translateY = t1.y + (t2.y - t1.y) * t,
-			scaleX     = s1.x + (d2.scale.x - s1.x) * t,
-			scaleY     = s1.y + (d2.scale.y - s1.y) * t
-			;
+			s1         = d1.scale;
 
 		// QR order (t-r-s-sk)
-		m.translate(translateX, translateY);
-		m.rotate(rotation);
-		m.scale(scaleX, scaleY);
+		m.translate(t1.x + (t2.x - t1.x) * t, t1.y + (t2.y - t1.y) * t);
+		m.rotate(d1.rotation + (d2.rotation - d1.rotation) * t);
+		m.scale(s1.x + (d2.scale.x - s1.x) * t, s1.y + (d2.scale.y - s1.y) * t);
 		//todo test skew scenarios
 
 		return m._x()
