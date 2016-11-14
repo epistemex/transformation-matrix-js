@@ -1,10 +1,8 @@
 /*!
-	2D Transformation Matrix v2.6.5
+	2D Transformation Matrix v2.7.0
 	(c) Epistemex.com 2014-2016
 	License: MIT, header required.
 */
-
-/* --- To see contributors: please see readme.md and Change.log --- */
 
 /**
  * 2D transformation matrix object initialized with identity matrix.
@@ -16,28 +14,46 @@
  * To synchronize a DOM element you can use [`toCSS()`]{@link Matrix#toCSS} or [`toCSS3D()`]{@link Matrix#toCSS3D}.
  *
  * @param {CanvasRenderingContext2D} [context] - Optional context to sync with Matrix
+ * @param {HTMLElement} [element=null] - DOM Element to synchronize
  * @prop {number} a - scale x
  * @prop {number} b - shear y
  * @prop {number} c - shear x
  * @prop {number} d - scale y
  * @prop {number} e - translate x
  * @prop {number} f - translate y
- * @prop {CanvasRenderingContext2D|null} [context=null] - set or get current canvas context
+ * @prop {CanvasRenderingContext2D} [context] - set or get current synchronized 2D context
+ * @prop {HTMLElement} [element] - get current synchronized DOM element
+ * @prop {boolean} [useCSS3D=false] - is a DOM element is defined for sync., choose whether to use 2D (false) or 3D (true) matrix to sync it.
  * @constructor
  * @license MIT license (header required)
  * @copyright Epistemex.com 2014-2016
  */
-function Matrix(context) {
+function Matrix(context, element) {
 
-	var me = this;
+	var me = this, _el;
 	me._t = me.transform;
 
 	me.a = me.d = 1;
 	me.b = me.c = me.e = me.f = 0;
 
-	// reset canvas to enable 100% sync.
+	// sync context
 	if (context)
 		(me.context = context).setTransform(1, 0, 0, 1, 0, 0);
+
+	// sync DOM element
+	Object.defineProperty(me, "element", {
+		get: function() {return _el},
+		set: function(el) {
+			if (!_el) {
+				me._px = me._getPX();
+				me.useCSS3D = false
+			}
+			_el = el;
+			(me._st = _el.style)[me._px] = me.toCSS();
+		}
+	});
+
+	if (element) me.element = element
 }
 
 /**
@@ -70,7 +86,7 @@ Matrix.fromTriangles = function(t1, t2, context) {
 		else {
 			rx1 = t1[2].x; ry1 = t1[2].y; rx2 = t2[2].x; ry2 = t2[2].y;
 			r1 = [t1[0].x - rx1, t1[0].y - ry1, t1[1].x - rx1, t1[1].y - ry1, rx1, ry1];
-			r2 = [t2[0].x - rx2, t2[0].y - ry2, t2[1].x - rx2, t1[1].y - ry2, rx2, ry2]
+			r2 = [t2[0].x - rx2, t2[0].y - ry2, t2[1].x - rx2, t2[1].y - ry2, rx2, ry2]
 		}
 	}
 	else {
@@ -85,37 +101,6 @@ Matrix.fromTriangles = function(t1, t2, context) {
 };
 
 /**
- * Create a new matrix from a SVGMatrix
- *
- * @param {SVGMatrix} svgMatrix - source SVG Matrix
- * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
- * @returns {Matrix}
- * @static
- * @private
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix|MDN / SVGMatrix}
- */
-Matrix.fromSVGMatrix = function(svgMatrix, context) {
-	console.warn("Obsolete. Use Matrix.from()");
-	return new Matrix(context).multiply(svgMatrix)
-};
-
-/**
- * Create a new matrix from a DOMMatrix
- *
- * @param {DOMMatrix} domMatrix - source DOMMatrix
- * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
- * @returns {Matrix}
- * @static
- * @private
- * @see {@link https://drafts.fxtf.org/geometry/#dommatrix|MDN / DOMMatrix}
- */
-Matrix.fromDOMMatrix = function(domMatrix, context) {
-	console.warn("Obsolete. Use Matrix.from()");
-	if (!domMatrix.is2D) throw "Cannot use 3D matrix.";
-	return new Matrix(context).multiply(domMatrix)
-};
-
-/**
  * Create a matrix from a transform list from an SVG shape. The list
  * can be for example baseVal (i.e. `shape.transform.baseVal`).
  *
@@ -124,12 +109,13 @@ Matrix.fromDOMMatrix = function(domMatrix, context) {
  *
  * @param {SVGTransformList} tList - transform list from an SVG shape.
  * @param {CanvasRenderingContext2D} [context] - optional canvas 2D context to use for the matrix
+ * @param {HTMLElement} [dom] - optional DOM element to use for the matrix
  * @returns {Matrix}
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/SVGTransformList|MDN / SVGTransformList}
  */
-Matrix.fromSVGTransformList = function(tList, context) {
+Matrix.fromSVGTransformList = function(tList, context, dom) {
 
-	var m = new Matrix(context),
+	var m = new Matrix(context, dom),
 		i = 0;
 
 	while(i < tList.length)
@@ -149,27 +135,47 @@ Matrix.fromSVGTransformList = function(tList, context) {
  *     var m = Matrix.from(domMatrix, ctx);
  *     var m = Matrix.from(svgMatrix);
  *     var m = Matrix.from(matrix);
+ *     var m = Matrix.from(vector [,pre-x] [,pre-y] [,doScale]);
  *
- * @param {number|DOMMatrix|SVGMatrix|Matrix} a - number representing a in [a-f], or a Matrix object containing properties a-f
- * @param {number|CanvasRenderingContext2D} [b] - b property if a is not a matrix object, or optional canvas 2D context
- * @param {number} [c]
- * @param {number} [d]
+ * @param {*} a - number representing a in [a-f], or a Matrix object containing properties a-f. Vector is given as an object with properties x and y.
+ * @param {*} [b] - b property if a is not a matrix object, or optional canvas 2D context.
+ * If vector is input this will be pre-translate for x.
+ * @param {number} [c] - If vector is input this will be pre-translate for y.
+ * @param {number} [d] - If vector is input, set this to true to use scale and translate of 1,
+ * false to use hypotenuse as translate distance instead and no scale.
  * @param {number} [e]
  * @param {number} [f]
  * @param {CanvasRenderingContext2D} [context] - optional canvas context to synchronize
+ * @param {HTMLElement} [dom] - optional DOM element to use for the matrix
  * @returns {Matrix}
  * @static
  */
-Matrix.from = function(a, b, c, d, e, f, context) {
+Matrix.from = function(a, b, c, d, e, f, context, dom) {
 
-	var m = new Matrix(context);
+	var m = new Matrix(context, dom), scale, dist, q;
 
 	if (typeof a === "number")
 		m.setTransform(a, b, c, d, e, f);
 
+	else if (typeof a.x === "number") {		// vector
+
+		q = Math.sqrt(a.x*a.x + a.y*a.y);
+		scale = dist = 1;
+
+		if (d) scale = q;
+		else dist = q;
+
+		m
+			.translate(b || 0, c || 0)
+			.rotateFromVector(a)
+			.scaleU(scale)
+			.translate(dist, 0);
+
+	}
 	else {
 		if (typeof a.is2D === "boolean" && !a.is2D) throw "Cannot use 3D DOMMatrix.";
 		if (b) m.context = b;
+		if (c) m.element = c;
 		m.multiply(a)
 	}
 
@@ -177,6 +183,15 @@ Matrix.from = function(a, b, c, d, e, f, context) {
 };
 
 Matrix.prototype = {
+
+	_getPX: function() {
+
+		var lst   = ["t", "oT", "msT", "mozT", "webkitT", "khtmlT"], i = 0, p,
+			style = document.createElement("div").style;
+
+		while(p = lst[i++])
+			if (typeof style[p + "ransform"] !== "undefined") return p + "ransform";
+	},
 
 	/**
 	 * Concatenates transforms of this matrix onto the given child matrix and
@@ -245,13 +260,14 @@ Matrix.prototype = {
 
 	/**
 	 * Converts a vector given as `x` and `y` to angle, and
-	 * rotates (accumulative).
-	 * @param x
-	 * @param y
+	 * rotates (accumulative). x can instead contain an object with
+	 * properties x and y and if so, y parameter will be ignored.
+	 * @param {number|*} x
+	 * @param {number} [y]
 	 * @returns {Matrix}
 	 */
 	rotateFromVector: function(x, y) {
-		return this.rotate(Math.atan2(y, x))
+		return this.rotate(typeof x === "number" ? Math.atan2(y, x) : Math.atan2(x.y, x.x))
 	},
 
 	/**
@@ -298,6 +314,16 @@ Matrix.prototype = {
 	 */
 	scaleY: function(sy) {
 		return this._t(1, 0, 0, sy, 0, 0)
+	},
+
+	/**
+	 * Converts a vector given as `x` and `y` to normalized scale.
+	 * @param x
+	 * @param y
+	 * @returns {Matrix}
+	 */
+	scaleFromVector: function(x, y) {
+		return this.scaleU(Math.sqrt(x*x + y*y))
 	},
 
 	/**
@@ -423,8 +449,8 @@ Matrix.prototype = {
 	 * Multiplies current matrix with new matrix values. Also see [`multiply()`]{@link Matrix#multiply}.
 	 *
 	 * @param {number} a2 - scale x
-	 * @param {number} b2 - shear y
-	 * @param {number} c2 - shear x
+	 * @param {number} b2 - skew y
+	 * @param {number} c2 - skew x
 	 * @param {number} d2 - scale y
 	 * @param {number} e2 - translate x
 	 * @param {number} f2 - translate y
@@ -440,11 +466,11 @@ Matrix.prototype = {
 			e1 = me.e,
 			f1 = me.f;
 
-		/* matrix order (canvas compatible):
-		* ace
-		* bdf
-		* 001
-		*/
+		/* matrix column order is:
+		 *   a c e
+		 *   b d f
+		 *   0 0 1
+		 */
 		me.a = a1 * a2 + c1 * b2;
 		me.b = b1 * a2 + d1 * b2;
 		me.c = a1 * c2 + c1 * d2;
@@ -457,7 +483,7 @@ Matrix.prototype = {
 
 	/**
 	 * Multiplies current matrix with source matrix.
-	 * @param {Matrix|SVGMatrix} m - source matrix to multiply with.
+	 * @param {Matrix|DOMMatrix|SVGMatrix} m - source matrix to multiply with.
 	 * @returns {Matrix}
 	 */
 	multiply: function(m) {
@@ -467,25 +493,25 @@ Matrix.prototype = {
 	/**
 	 * Divide this matrix on input matrix which must be invertible.
 	 * @param {Matrix} m - matrix to divide on (divisor)
-	 * @throws Exception is input matrix is not invertible
+	 * @throws Exception if input matrix is not invertible
 	 * @returns {Matrix}
 	 */
 	divide: function(m) {
-
-		if (!m.isInvertible())
-			throw "Matrix not invertible";
-
 		return this.multiply(m.inverse())
 	},
 
 	/**
 	 * Divide current matrix on scalar value != 0.
-	 * @param {number} d - divisor (can not be 0)
+	 * @param {number} d - divisor
+	 * @throws Exception if divisor is zero
 	 * @returns {Matrix}
 	 */
 	divideScalar: function(d) {
 
 		var me = this;
+
+		if (!d) throw "Division on zero";
+
 		me.a /= d;
 		me.b /= d;
 		me.c /= d;
@@ -502,13 +528,14 @@ Matrix.prototype = {
 	 * Context from parent matrix is not applied to the returned matrix.
 	 *
 	 * @param {boolean} [cloneContext=false] - clone current context to resulting matrix
+	 * @param {boolean} [cloneDOM=false] - clone current DOM element to resulting matrix
 	 * @throws Exception is input matrix is not invertible
 	 * @returns {Matrix} - new Matrix instance
 	 */
-	inverse: function(cloneContext) {
+	inverse: function(cloneContext, cloneDOM) {
 
 		var me = this,
-			m  = new Matrix(cloneContext ? me.context : null),
+			m  = new Matrix(cloneContext ? me.context : null, cloneDOM ? me.element : null),
 			dt = me.determinant();
 
 		if (me._q(dt, 0))
@@ -538,12 +565,13 @@ Matrix.prototype = {
 	 * @param {Matrix|SVGMatrix} m2 - the matrix to interpolate with.
 	 * @param {number} t - interpolation [0.0, 1.0]
 	 * @param {CanvasRenderingContext2D} [context] - optional context to affect
+	 * @param {HTMLElement} [dom] - optional DOM element to use for the matrix
 	 * @returns {Matrix} - new Matrix instance with the interpolated result
 	 */
-	interpolate: function(m2, t, context) {
+	interpolate: function(m2, t, context, dom) {
 
 		var me = this,
-			m  = context ? new Matrix(context) : new Matrix();
+			m  = new Matrix(context, dom);
 
 		m.a = me.a + (m2.a - me.a) * t;
 		m.b = me.b + (m2.b - me.b) * t;
@@ -572,11 +600,12 @@ Matrix.prototype = {
 	 * @param {Matrix} m2 - the matrix to interpolate with.
 	 * @param {number} t - interpolation [0.0, 1.0]
 	 * @param {CanvasRenderingContext2D} [context] - optional context to affect
+	 * @param {HTMLElement} [dom] - optional DOM element to use for the matrix
 	 * @returns {Matrix} - new Matrix instance with the interpolated result
 	 */
-	interpolateAnim: function(m2, t, context) {
+	interpolateAnim: function(m2, t, context, dom) {
 
-		var m          = new Matrix(context ? context : null),
+		var m          = new Matrix(context, dom),
 			d1         = this.decompose(),
 			d2         = m2.decompose(),
 			t1         = d1.translate,
@@ -777,6 +806,47 @@ Matrix.prototype = {
 	},
 
 	/**
+	 * Apply to any DOM element. This does not affect the DOM element
+	 * that optionally was referenced in constructor unless it is
+	 * the same element.
+	 *
+	 * The method will auto-detect the correct browser prefix if any.
+	 *
+	 * @param {HTMLElement} element - target DOM element
+	 * @param {boolean} [use3D=false] - use 3D transformation matrix instead of 2D
+	 * @returns {Matrix}
+	 */
+	applyToElement: function(element, use3D) {
+		var me = this;
+		if (!me._px) me._px = me._getPX();
+		element.style[me._px] = use3D ? me.getCSS3D() : me.getCSS();
+		return me
+	},
+
+	/**
+	 * Instead of creating a new instance of a Matrix, DOMMatrix or SVGMatrix
+	 * the current settings of this instance can be applied to an external
+	 * object of a different (or same) type. You can also pass in an
+	 * empty literal object.
+	 *
+	 * Note that the properties a-f will be set regardless of if they
+	 * already exist or not.
+	 *
+	 * @param {*} obj - target object.
+	 * @returns {Matrix}
+	 */
+	applyToObject: function(obj) {
+		var me = this;
+		obj.a = me.a;
+		obj.b = me.b;
+		obj.c = me.c;
+		obj.d = me.d;
+		obj.e = me.e;
+		obj.f = me.f;
+		return me
+	},
+
+	/**
 	 * Returns true if matrix is an identity matrix (no transforms applied).
 	 * @returns {boolean}
 	 */
@@ -950,34 +1020,24 @@ Matrix.prototype = {
 	 * Convert current matrix into a `SVGMatrix`. If `SVGMatrix` is not
 	 * supported, a `null` is returned.
 	 *
-	 * Note: BETA
-	 *
 	 * @returns {SVGMatrix}
 	 * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix|MDN / SVGMatrix}
 	 */
 	toSVGMatrix: function() {
 
-		// as we can not set transforms directly on SVG matrices we need
-		// to decompose our own matrix first:
-		var dc = this.decompose(),
-			translate = dc.translate,
-			scale = dc.scale,
-			skew = dc.skew,
-			eq = this._q,
-			svgMatrix = document.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGMatrix();
+		var	me = this,
+			svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"),
+			svgMatrix = null;
 
-		if (!svgMatrix) return null;
-
-		// apply transformations in the correct order (see decompose()), QR: translate -> rotate -> scale -> skew
-		svgMatrix = svgMatrix.translate(translate.x, translate.y);
-		svgMatrix = svgMatrix.rotate(dc.rotation / Math.PI * 180);		// SVGMatrix uses degrees
-		svgMatrix = svgMatrix.scaleNonUniform(scale.x, scale.y);
-
-		if (!eq(0, skew.x))
-			svgMatrix = svgMatrix.skewX(skew.x);
-
-		if (!eq(0, skew.y))
-			svgMatrix = svgMatrix.skewY(skew.y);
+		if (svg) {
+			svgMatrix = svg.createSVGMatrix();
+			svgMatrix.a = me.a;
+			svgMatrix.b = me.b;
+			svgMatrix.c = me.c;
+			svgMatrix.d = me.d;
+			svgMatrix.e = me.e;
+			svgMatrix.f = me.f;
+		}
 
 		return svgMatrix
 	},
@@ -995,13 +1055,20 @@ Matrix.prototype = {
 
 	/**
 	 * Apply current absolute matrix to context if defined, to sync it.
+	 * Apply current absolute matrix to element if defined, to sync it.
 	 * @returns {Matrix}
 	 * @private
 	 */
 	_x: function() {
+
 		var me = this;
+
 		if (me.context)
 			me.context.setTransform(me.a, me.b, me.c, me.d, me.e, me.f);
+
+		if (me._st)
+			me._st[me._px] = me.useCSS3D ? me.toCSS3D() : me.toCSS();	// can be optimized pre-storing func ref.
+
 		return me
 	}
 };
