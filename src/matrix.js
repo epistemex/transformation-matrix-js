@@ -813,7 +813,7 @@ Matrix.prototype = {
 	applyToElement: function(element, use3D) {
 		var me = this;
 		if (!me._px) me._px = me._getPX();
-		element.style[me._px] = use3D ? me.getCSS3D() : me.getCSS();
+		element.style[me._px] = use3D ? me.toCSS3D() : me.toCSS();
 		return me
 	},
 
