@@ -1,16 +1,15 @@
 2D Affine Transformation Matrix
 ===============================
 
-An affine transformation matrix (3x3) class for JavaScript that performs various transformations such as rotate, scale, translate, skew, shear, add, subtract, multiply, divide, inverse, decomposing, animation, converting to and from a SVG matrix, creating matrix from triangles and more (full HTML documentation is included).
+An affine transformation matrix (3x3) class for JavaScript that performs various transformations such as rotate, scale, translate, skew, shear, add, subtract, multiply, divide, inverse, decomposing, animation, converting to and from a SVG/DOM matrix, creating matrix from triangles and more ([full HTML documentation](https://epistemex.github.io/transformation-matrix-js/Matrix.html) is included).
 
-It's primarily intended for situations where you need to track or create transforms and want to apply it permanently/manually to your own points and polygons.
+It's primarily intended for situations where you need to track or create transforms and want to apply it permanently/manually to your own points and polygons, or when you need cross-browser compatibility.
 
 The matrix can optionally synchronize a canvas 2D context or a DOM element so that the transformations on the canvas matches pixel perfect the local transformations of the Matrix object.
 
 For browsers which support DOMMatrix and/or SVGMatrix it can be used as a supplementary framework to increase flexibility such as working directly with transformed points, perform addition transformation, interpolate animation and so forth.
 
-
-*Automatic Node support when used in a node.js environment.*
+Targets first and most client side use, but can be used directly in a node.js environment as well.
 
 *No dependencies.*
 
@@ -80,21 +79,21 @@ Can optionally synchronize a canvas 2D context and/or a DOM element.
 
 	applyToArray(points)
 	applyToContext(context)
-	applyToElement(element, use3D)      // auto-detects browser prefix if any
+	applyToElement(element [, use3D])    // auto-detects browser prefix if any
 	applyToObject(obj)
 	applyToPoint(x, y)
-	applyToTypedArray(points, use64)
+	applyToTypedArray(points [, use64])
 	clone(noContext)
 	concat(cm)
-	decompose(useLU)					// breaks down the transform into individual components
+	decompose([useLU])                   // breaks down the transform into individual components
 	determinant()
 	divide(m)
 	divideScalar(d)
 	flipX()
 	flipY()
-	interpolate(m2, t, context, dom)
-	interpolateAnim(m2, t, context, dom) // decomposed interpolation (prevents flipping)
-	inverse(cloneContext, cloneElement)
+	interpolate(m2, t [, context [, dom]])
+	interpolateAnim(m2, t [, context [, dom]]) // decomposed interpolation (prevents flipping)
+	inverse([cloneContext][, cloneElement])    // get inverse matrix
 	isEqual(m)
 	isIdentity()
 	isInvertible()
@@ -126,7 +125,7 @@ Can optionally synchronize a canvas 2D context and/or a DOM element.
 	toString()
 	toDOMMatrix()                       // creates a DOMMatrix from current transforms
 	toSVGMatrix()						// creates a SVGMatrix from current transforms
-	toTypedArray(use64)
+	toTypedArray([use64])
 	transform(a2, b2, c2, d2, e2, f2)
 	translate(tx, ty)
 	translateX(tx)
@@ -210,6 +209,7 @@ Contributors
 - Leon Sorokin (https://github.com/leeoniya)
 - Henry Ruhs (https://github.com/redaxmedia)
 - Matthieu Dumas (https://github.com/solendil)
+- Viktor Hesselbom (https://github.com/hesselbom)
 
 See Change.log for details.
 
@@ -219,6 +219,6 @@ License
 
 Released under [MIT license](http://choosealicense.com/licenses/mit/). You can use this class in both commercial and non-commercial projects provided that full header (minified and developer versions) is included.
 
-*&copy; 2014-2016 Epistemex*
+*&copy; 2014-2017 Epistemex*
 
-![Epistemex](http://i.imgur.com/wZSsyt8.png)
+![Epistemex](http://i.imgur.com/GP6Q3v8.png)

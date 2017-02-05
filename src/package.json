@@ -1,6 +1,6 @@
 {
   "name": "transformation-matrix-js",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "2D affine matrix power tools for JavaScript",
   "main": "matrix.js",
   "scripts": {
@@ -21,6 +21,10 @@
     {
       "name": "Matthieu Dumas",
       "url": "https://github.com/solendil"
+    },
+    {
+      "name": "Viktor Hesselblom",
+      "url": "https://github.com/hesselblom"
     }
   ],
   "keywords": ["transformation", "matrix", "affine", "2d", "rotate", "translate", "scale", "animate", "animation", "triangles"],

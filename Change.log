@@ -1,6 +1,9 @@
 Change log for 2D Transformation Matrix
 ---------------------------------------
 
+2.7.1
+FIX: applyToElement() calling the correct method internally (thanks to @hesselblom)
+
 2.7.0
 REM: fromSVGMatrix() and fromDOMMatrix(), which are replaced by from()
 FIX: Typo in fromTriangle() when using x/y objects in array
