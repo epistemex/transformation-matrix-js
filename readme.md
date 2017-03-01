@@ -1,7 +1,7 @@
 2D Affine Transformation Matrix
 ===============================
 
-An affine transformation matrix (3x3) class for JavaScript that performs various transformations such as rotate, scale, translate, skew, shear, add, subtract, multiply, divide, inverse, decomposing, animation, converting to and from a SVG/DOM matrix, creating matrix from triangles and more ([full HTML documentation](https://epistemex.github.io/transformation-matrix-js/Matrix.html) is included).
+An affine transformation matrix (3x3) class for JavaScript that performs various transformations such as rotate, scale, translate, skew, shear, add, subtract, multiply, divide, inverse, decomposing, animation, converting to and from a SVG/DOM matrix, creating matrix from triangles and more ([full HTML documentation](https://epistemex.gitlab.io/transformation-matrix-js/Matrix.html) is included).
 
 It's primarily intended for situations where you need to track or create transforms and want to apply it permanently/manually to your own points and polygons, or when you need cross-browser compatibility.
 
@@ -21,11 +21,11 @@ Download zip and extract to folder.
 
 git via HTTPS:
 
-    $ git clone https://github.com/epistemex/transformation-matrix-js.git
+    $ git clone https://gitlab.com/epistemex/transformation-matrix-js.git
 
 git via SSH:
 
-    $ git clone git@github.com:epistemex/transformation-matrix-js.git
+    $ git clone git@gitlab.com:epistemex/transformation-matrix-js.git
 
 Using Bower:
 
@@ -205,7 +205,7 @@ See documentation for full overview and usage.
 Contributors
 ============
 
-- Ken "Fyrstenberg" Nilsen (creator) (https://github.com/epistemex)
+- Ken "Fyrstenberg" Nilsen (creator) (https://gitlab.com/epistemex)
 - Leon Sorokin (https://github.com/leeoniya)
 - Henry Ruhs (https://github.com/redaxmedia)
 - Matthieu Dumas (https://github.com/solendil)

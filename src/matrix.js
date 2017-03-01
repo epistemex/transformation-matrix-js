@@ -1,5 +1,5 @@
 /*!
-	2D Transformation Matrix v2.7.1
+	2D Transformation Matrix v2.7.2
 	(c) Epistemex.com 2014-2017
 	License: MIT, header required.
 */

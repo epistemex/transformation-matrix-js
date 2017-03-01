@@ -30,10 +30,10 @@
   "keywords": ["transformation", "matrix", "affine", "2d", "rotate", "translate", "scale", "animate", "animation", "triangles"],
   "repository" : {
     "type": "git",
-    "url": "https://github.com/epistemex/transformation-matrix-js.git"
+    "url": "https://gitlab.com/epistemex/transformation-matrix-js.git"
   },
   "bugs": {
-    "url": "https://github.com/epistemex/transformation-matrix-js/issues"
+    "url": "https://gitlab.com/epistemex/transformation-matrix-js/issues"
   },
   "license": "MIT"
 }

@@ -1,6 +1,9 @@
 Change log for 2D Transformation Matrix
 ---------------------------------------
 
+2.7.2
+BUMP: Version bump to replace bower/npm defs moving from GitHub to GitLab.
+
 2.7.1
 FIX: applyToElement() calling the correct method internally (thanks to @hesselblom)
 
