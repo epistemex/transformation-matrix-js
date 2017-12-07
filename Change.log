@@ -1,6 +1,10 @@
 Change log for 2D Transformation Matrix
 ---------------------------------------
 
+2.7.4
+ADD: Light version (separate file - see docs for differences)
+REM: 64-bit option removed from toTypedArray
+
 2.7.3
 FIX: isIdentity() - removed epsilon as it needs to be exactly identity
 FIX: inverse() - removed internal epsilon as determinant needs to exact 0 to not be invertible

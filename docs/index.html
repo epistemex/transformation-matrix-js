@@ -33,7 +33,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Matrix.html">Matrix</a></li>
+					<li><a href="Matrix.html">Matrix</a></li><li><a href="MatrixLT.html">MatrixLT</a></li>
 				</ul>
 			</li>
 			
@@ -45,16 +45,18 @@
 			</li>
 			
 		</ul>
-		<div class="col-sm-3 col-md-3">
-            <form class="navbar-form" role="search">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
-                    <div class="input-group-btn">
-                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+        
 	</div>
 
 </div>
@@ -91,16 +93,17 @@
 
 
     <section class="readme-section">
-        <article><h1>2D Affine Transformation Matrix</h1><p>An affine transformation matrix (3x3) class for JavaScript that performs various transformations such as rotate, scale, translate, skew, shear, add, subtract, multiply, divide, inverse, decomposing, animation, converting to and from a SVG/DOM matrix, creating matrix from triangles and more (<a href="https://epistemex.gitlab.io/transformation-matrix-js/Matrix.html">full HTML documentation</a> is included).</p>
+        <article><h1>2D Affine Transformation Matrix</h1><p>An affine transformation matrix (3x3) class for JavaScript that performs various transformations such as rotate, scale, translate, skew, shear, add, subtract, multiply, divide, inverse, decomposing, animation, converting to and from a SVG/DOM matrix, creating matrix from triangles and more (full HTML documentation is included).</p>
 <p>It's primarily intended for situations where you need to track or create transforms and want to apply it permanently/manually to your own points and polygons, or when you need cross-browser compatibility.</p>
 <p>The matrix can optionally synchronize a canvas 2D context or a DOM element so that the transformations on the canvas matches pixel perfect the local transformations of the Matrix object.</p>
 <p>For browsers which support DOMMatrix and/or SVGMatrix it can be used as a supplementary framework to increase flexibility such as working directly with transformed points, perform addition transformation, interpolate animation and so forth.</p>
 <p>Targets first and most client side use, but can be used directly in a node.js environment as well.</p>
 <p><em>No dependencies.</em></p>
+<p>There is now also included a &quot;light&quot; version with the essentials only.</p>
 <h1>Install</h1><p>Download zip and extract to folder.</p>
 <p>git via HTTPS:</p>
-<pre class="prettyprint source"><code>$ git clone https://gitlab.com/epistemex/transformation-matrix-js.git</code></pre><p>git via SSH:</p>
-<pre class="prettyprint source"><code>$ git clone git@gitlab.com:epistemex/transformation-matrix-js.git</code></pre><p>Using Bower:</p>
+<pre class="prettyprint source"><code>$ git clone https://github.com/epistemex/transformation-matrix-js.git</code></pre><p>git via SSH:</p>
+<pre class="prettyprint source"><code>$ git clone git@github.com:epistemex/transformation-matrix-js.git</code></pre><p>Using Bower:</p>
 <pre class="prettyprint source"><code>$ bower install transformation-matrix-js</code></pre><p>Using NPM</p>
 <pre class="prettyprint source"><code>$ npm install transformation-matrix-js</code></pre><h1>Usage</h1><h2>Browser</h2><p>Just include the script and create a new instance:</p>
 <pre class="prettyprint source"><code>var matrix = new Matrix([context] [,domElement]);</code></pre><p>You can supply an optional canvas 2D context and/or DOM element as arguments which will be synchronized with the transformations that are applied to the matrix object.</p>
@@ -228,24 +231,26 @@ the constructor or synchronize manually (auto-detects browser prefix):</p>
 </div>
 </div>
 
-<div class="modal fade" id="searchResults">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Search results</h4>
-      </div>
-      <div class="modal-body"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
 
 <footer>
 
-	<p><b><a href='https://gitlab.com/epistemex/'>Epistemex at GitLab</a></b></p>
+	<p><b><a href='https://github.com/epistemex/'>Epistemex at GitHub</a></b></p>
 
 
 	<span class="copyright">
@@ -253,9 +258,9 @@ the constructor or synchronize manually (auto-detects browser prefix):</p>
 	</span>
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 	
-		on Thu Aug 24th 2017
+		on Thu Dec 7th 2017
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
@@ -263,7 +268,9 @@ the constructor or synchronize manually (auto-detects browser prefix):</p>
 
 <script src="scripts/docstrap.lib.js"></script>
 <script src="scripts/toc.js"></script>
-<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
 
 <script>
 $( function () {
@@ -273,7 +280,7 @@ $( function () {
 		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
 	} );
 
-	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
 		var $this = $( this );
 
 		var example = $this.find( "code" );
@@ -309,8 +316,7 @@ $( function () {
 	} );
 	$( "#toc" ).toc( {
 		anchorName  : function ( i, heading, prefix ) {
-			var id = $( heading ).attr( "id" );
-			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+			return $( heading ).attr( "id" ) || ( prefix + i );
 		},
 		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
 		showAndHide : false,
@@ -336,11 +342,13 @@ $( function () {
 <!--Google Analytics-->
 
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		SearcherDisplay.init();
-	});
-</script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
 
 </body>
 </html>

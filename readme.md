@@ -13,6 +13,8 @@ Targets first and most client side use, but can be used directly in a node.js en
 
 *No dependencies.*
 
+There is now also included a "light" version with the essentials only.
+
 
 Install
 =======
@@ -64,7 +66,7 @@ Quick overview
 **Constructor**
 
     var m = new Matrix( [context] [,element] );
-    
+
 Can optionally synchronize a canvas 2D context and/or a DOM element.
 
 **Static methods (alternatives to the constructor):**
