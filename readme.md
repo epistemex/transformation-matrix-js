@@ -1,7 +1,7 @@
 2D Affine Transformation Matrix
 ===============================
 
-An affine transformation matrix (3x3) class for JavaScript that performs various transformations such as rotate, scale, translate, skew, shear, add, subtract, multiply, divide, inverse, decomposing, animation, converting to and from a SVG/DOM matrix, creating matrix from triangles and more (full HTML documentation) is included).
+An affine transformation matrix (3x3) class for JavaScript that performs various transformations such as rotate, scale, translate, skew, shear, add, subtract, multiply, divide, inverse, decomposing, animation, converting to and from a SVG/DOM matrix, creating matrix from triangles and more (full HTML documentation is included).
 
 It's primarily intended for situations where you need to track or create transforms and want to apply it permanently/manually to your own points and polygons, or when you need cross-browser compatibility.
 
@@ -64,7 +64,7 @@ Quick overview
 **Constructor**
 
     var m = new Matrix( [context] [,element] );
-
+    
 Can optionally synchronize a canvas 2D context and/or a DOM element.
 
 **Static methods (alternatives to the constructor):**
@@ -72,20 +72,20 @@ Can optionally synchronize a canvas 2D context and/or a DOM element.
     Matrix.from( a, b, c, d, e, f );        // create a matrix from various sources
     Matrix.from( DOMMatrix );
     Matrix.from( SVGMatrix );
-	Matrix.fromTriangles( t1, t2 );         // returns matrix needed to produce t2 from t1
+	Matrix.fromTriangles( t1, t2 );   		// returns matrix needed to produce t2 from t1
 	Matrix.fromSVGTransformList( tList );	// create new matrix from a SVG transform list
 
 **Methods:**
 
 	applyToArray(points)
 	applyToContext(context)
-	applyToElement(element [, use3D])       // auto-detects browser prefix if any
+	applyToElement(element [, use3D])    // auto-detects browser prefix if any
 	applyToObject(obj)
 	applyToPoint(x, y)
 	applyToTypedArray(points [, use64])
 	clone(noContext)
 	concat(cm)
-	decompose([useLU])                      // breaks down the transform into individual components
+	decompose([useLU])                   // breaks down the transform into individual components
 	determinant()
 	divide(m)
 	divideScalar(d)
@@ -106,7 +106,7 @@ Can optionally synchronize a canvas 2D context and/or a DOM element.
 	rotateFromVector(x, y)
 	scale(sx, sy)
 	scaleFromVector(x, y)               // uniform scale based on input vector (hypotenuse)
-	scaleU(f)                           // uniform scale
+	scaleU(f)							// uniform scale
 	scaleX(sx)
 	scaleY(sy)
 	setTransform(a, b, c, d, e, f)
@@ -124,7 +124,7 @@ Can optionally synchronize a canvas 2D context and/or a DOM element.
 	toJSON()
 	toString()
 	toDOMMatrix()                       // creates a DOMMatrix from current transforms
-	toSVGMatrix()                       // creates a SVGMatrix from current transforms
+	toSVGMatrix()						// creates a SVGMatrix from current transforms
 	toTypedArray([use64])
 	transform(a2, b2, c2, d2, e2, f2)
 	translate(tx, ty)
@@ -133,12 +133,12 @@ Can optionally synchronize a canvas 2D context and/or a DOM element.
 
 **Properties:**
 
-    a       // scale x
-    b       // shear y
-    c       // shear x
-    d       // scale y
-    e       // translate x
-    f       // translate y
+    a									// scale x
+    b									// shear y
+    c									// shear x
+    d									// scale y
+    e									// translate x
+    f									// translate y
 
 Examples
 --------
@@ -205,7 +205,7 @@ See documentation for full overview and usage.
 Contributors
 ============
 
-- Ken Nilsen (creator) (https://github.com/epistemex)
+- Ken Nilsen (creator) (https://gitlab.com/epistemex)
 - Leon Sorokin (https://github.com/leeoniya)
 - Henry Ruhs (https://github.com/redaxmedia)
 - Matthieu Dumas (https://github.com/solendil)
