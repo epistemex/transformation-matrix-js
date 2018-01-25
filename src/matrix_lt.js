@@ -64,12 +64,12 @@ function MatrixLT(context) {
  * @param {number} [e] - e property (translate x)
  * @param {number} [f] - f property (translate y)
  * @param {CanvasRenderingContext2D} [context] - optional canvas context to synchronize
- * @returns {Matrix}
+ * @returns {MatrixLT} - new MatrixLT instance
  * @static
  */
 MatrixLT.from = function(a, b, c, d, e, f, context) {
 
-  var m = new Matrix(context), scale, dist, q;
+  var m = new MatrixLT(context), scale, dist, q;
 
   if (typeof a === "number")
     m.setTransform(a, b, c, d, e, f);
