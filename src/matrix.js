@@ -1,6 +1,6 @@
 /*!
-  2D Transformation Matrix v2.7.4
-  (c) Epistemex.com 2014-2017
+  2D Transformation Matrix v2.7.5
+  (c) Epistemex.com 2014-2018
   License: MIT
 */
 
@@ -26,8 +26,8 @@
  * @prop {HTMLElement} [element] - get current synchronized DOM element
  * @prop {boolean} [useCSS3D=false] - is a DOM element is defined for sync., choose whether to use 2D (false) or 3D (true) matrix to sync it.
  * @constructor
- * @license MIT license (header required)
- * @copyright Epistemex.com 2014-2017
+ * @license MIT license
+ * @copyright Epistemex.com 2014-2018
  */
 function Matrix(context, element) {
 
@@ -137,6 +137,7 @@ Matrix.fromSVGTransformList = function(tList, context, dom) {
  * var m = Matrix.from(1, 0.2, 0, 2, 120, 97);
  * var m = Matrix.from(domMatrix, ctx);
  * var m = Matrix.from(svgMatrix);
+ * var m = Matrix.from(cssMatrix);
  * var m = Matrix.from(matrix);
  * var m = Matrix.from(vector [,pre-x] [,pre-y] [,doScale]);
  *

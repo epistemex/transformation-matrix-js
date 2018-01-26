@@ -1,6 +1,11 @@
 Change log for 2D Transformation Matrix
 ---------------------------------------
 
+2.7.5
+FIX: MatrixLT instancing via from() returned Matrix instead of MatrixLT
+
+Thanks to https://github.com/psyrendust for this PR.
+
 2.7.4
 ADD: Light version (separate file - see docs for differences)
 REM: 64-bit option removed from toTypedArray

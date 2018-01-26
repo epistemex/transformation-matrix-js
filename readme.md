@@ -72,8 +72,7 @@ Can optionally synchronize a canvas 2D context and/or a DOM element.
 **Static methods (alternatives to the constructor):**
 
     Matrix.from( a, b, c, d, e, f );        // create a matrix from various sources
-    Matrix.from( DOMMatrix );
-    Matrix.from( SVGMatrix );
+    Matrix.from( DOMMatrix | SVGMatrix | CSSMatrix);
 	Matrix.fromTriangles( t1, t2 );   		// returns matrix needed to produce t2 from t1
 	Matrix.fromSVGTransformList( tList );	// create new matrix from a SVG transform list
 
@@ -212,6 +211,7 @@ Contributors
 - Henry Ruhs (https://github.com/redaxmedia)
 - Matthieu Dumas (https://github.com/solendil)
 - Viktor Hesselbom (https://github.com/hesselbom)
+- Larry Gordon (https://github.com/psyrendust)
 
 See Change.log for details.
 
@@ -221,6 +221,6 @@ License
 
 Released under [MIT license](http://choosealicense.com/licenses/mit/). You can use this class in both commercial and non-commercial projects provided that full header (minified and developer versions) is included.
 
-*&copy; 2014-2017 Epistemex*
+*&copy; 2014-2018 Epistemex*
 
 ![Epistemex](http://i.imgur.com/GP6Q3v8.png)

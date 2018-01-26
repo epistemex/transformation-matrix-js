@@ -1,6 +1,6 @@
 /*!
-  2D Transformation MatrixLT v2.7.4 LT
-  (c) Epistemex.com 2014-2017
+  2D Transformation MatrixLT v2.7.5 LT
+  (c) Epistemex.com 2014-2018
   License: MIT
 */
 
@@ -28,7 +28,7 @@
  * @prop {CanvasRenderingContext2D} [context] - set or get current synchronized 2D context
  * @constructor
  * @license MIT license (header required)
- * @copyright Epistemex.com 2014-2017
+ * @copyright Epistemex.com 2014-2018
  */
 function MatrixLT(context) {
 
