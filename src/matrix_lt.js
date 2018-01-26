@@ -47,14 +47,14 @@ function MatrixLT(context) {
 /**
  * Create and transform a new matrix based on given matrix values, or
  * provide SVGMatrix or a (2D) DOMMatrix, WebKitCSSMatrix or another
- * instance of a generic Matrix.
+ * instance of a generic matrix.
  *
  * @example
  *
- * var m = Matrix.from(1, 0.2, 0, 2, 120, 97);
- * var m = Matrix.from(domMatrix, ctx);
- * var m = Matrix.from(svgMatrix);
- * var m = Matrix.from(matrix);
+ * var m = MatrixLT.from(1, 0.2, 0, 2, 120, 97);
+ * var m = MatrixLT.from(domMatrix, ctx);
+ * var m = MatrixLT.from(svgMatrix);
+ * var m = MatrixLT.from(matrix);
  *
  * @param {*} a - number representing a (scale x) in [a-f], or a Matrix object containing properties a-f.
  * @param {*} [b] - b property (shear y) if a is not a matrix object, or optional canvas 2D context.
@@ -218,7 +218,7 @@ MatrixLT.prototype = {
 
   /**
    * Multiplies current matrix with source matrix.
-   * @param {MatrixLT|DOMMatrix|SVGMatrix} m - source matrix to multiply with.
+   * @param {MatrixLT|Matrix|DOMMatrix|SVGMatrix} m - source matrix to multiply with.
    * @returns {MatrixLT}
    */
   multiply: function(m) {
@@ -258,7 +258,6 @@ MatrixLT.prototype = {
    *
    * @returns {*} - an object containing current decomposed values (translate, rotation, scale, skew)
    * @see {@link https://en.wikipedia.org/wiki/QR_decomposition|More on QR decomposition}
-   * @see {@link https://en.wikipedia.org/wiki/LU_decomposition|More on LU decomposition}
    */
   decompose: function() {
 
@@ -376,7 +375,7 @@ MatrixLT.prototype = {
   /**
    * Compares current matrix with another matrix. Returns true if equal
    * (within epsilon tolerance).
-   * @param {MatrixLT|SVGMatrix} m - matrix to compare this matrix with
+   * @param {MatrixLT|Matrix|DOMMatrix|SVGMatrix} m - matrix to compare this matrix with
    * @returns {boolean}
    */
   isEqual: function(m) {

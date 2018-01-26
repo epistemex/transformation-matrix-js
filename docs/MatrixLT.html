@@ -449,7 +449,7 @@ together with for example the <code>style.transform</code> property.</p>
 	<dt class="tag-copyright method-doc-label method-doc-details-label">Copyright:</dt>
 	<dd class="tag-copyright">
 		<ul class="dummy">
-			<li>Epistemex.com 2014-2017</li>
+			<li>Epistemex.com 2014-2018</li>
 		</ul>
 	</dd>
 	
@@ -524,7 +524,7 @@ together with for example the <code>style.transform</code> property.</p>
     <div class="description">
         <p>Create and transform a new matrix based on given matrix values, or
 provide SVGMatrix or a (2D) DOMMatrix, WebKitCSSMatrix or another
-instance of a generic Matrix.</p>
+instance of a generic matrix.</p>
     </div>
     
 
@@ -881,7 +881,7 @@ If vector is input this will be pre-translate for x.</p></td>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">var m = Matrix.from(1, 0.2, 0, 2, 120, 97);var m = Matrix.from(domMatrix, ctx);var m = Matrix.from(svgMatrix);var m = Matrix.from(matrix);</pre>
+    <pre class="sunlight-highlight-javascript">var m = MatrixLT.from(1, 0.2, 0, 2, 120, 97);var m = MatrixLT.from(domMatrix, ctx);var m = MatrixLT.from(svgMatrix);var m = MatrixLT.from(matrix);</pre>
 
 
     
@@ -1450,8 +1450,6 @@ Returns a point object.</p>
 	<dd class="tag-see">
 		<ul>
 			<li><a href="https://en.wikipedia.org/wiki/QR_decomposition">More on QR decomposition</a></li>
-			
-			<li><a href="https://en.wikipedia.org/wiki/LU_decomposition">More on LU decomposition</a></li>
 			</ul>
 	</dd>
 	
@@ -1842,6 +1840,12 @@ Context from parent matrix is not applied to the returned matrix.</p>
             
                 
 <span class="param-type"><a href="MatrixLT.html">MatrixLT</a></span>
+|
+
+<span class="param-type"><a href="Matrix.html">Matrix</a></span>
+|
+
+<span class="param-type">DOMMatrix</span>
 |
 
 <span class="param-type">SVGMatrix</span>
@@ -2290,6 +2294,9 @@ set explicitly to a non-zero value.</p>
             
                 
 <span class="param-type"><a href="MatrixLT.html">MatrixLT</a></span>
+|
+
+<span class="param-type"><a href="Matrix.html">Matrix</a></span>
 |
 
 <span class="param-type">DOMMatrix</span>
