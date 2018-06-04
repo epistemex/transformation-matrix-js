@@ -23,11 +23,11 @@ Download zip and extract to folder.
 
 git via HTTPS:
 
-    $ git clone https://github.com/epistemex/transformation-matrix-js.git
+    $ git clone https://gitlab.com/epistemex/transformation-matrix-js.git
 
 git via SSH:
 
-    $ git clone git@github.com:epistemex/transformation-matrix-js.git
+    $ git clone git@gitlab.com:epistemex/transformation-matrix-js.git
 
 Using Bower:
 
