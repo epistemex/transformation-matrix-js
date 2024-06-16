@@ -1,6 +1,6 @@
 /*!
-  2D Transformation Matrix v2.7.5
-  (c) Epistemex.com 2014-2018
+  2D Transformation Matrix v3.0.0
+  (c) Epistemex.com 2014-2018, 2024
   License: MIT
 */
 
@@ -27,41 +27,42 @@
  * @prop {boolean} [useCSS3D=false] - is a DOM element is defined for sync., choose whether to use 2D (false) or 3D (true) matrix to sync it.
  * @constructor
  * @license MIT license
- * @copyright Epistemex.com 2014-2018
+ * @copyright Epistemex.com 2014-2018, 2024
  */
 function Matrix(context, element) {
 
-  var me = this, _el;
-  me._t = me.transform;
+  let _el;
 
-  me.a = me.d = 1;
-  me.b = me.c = me.e = me.f = 0;
+  this._t = this.transform;
+
+  this.a = this.d = 1;
+  this.b = this.c = this.e = this.f = 0;
 
   // sync context
-  if (context)
-    (me.context = context).setTransform(1, 0, 0, 1, 0, 0);
+  if ( context )
+    (this.context = context).setTransform(1, 0, 0, 1, 0, 0);
 
   // sync DOM element
-  Object.defineProperty(me, "element", {
-    get: function() {return _el},
+  Object.defineProperty(this, 'element', {
+    get: function() {return _el;},
     set: function(el) {
-      if (!_el) {
-        me._px = me._getPX();
-        me.useCSS3D = false
+      if ( !_el ) {
+        this._px = this._getPX();
+        this.useCSS3D = false;
       }
       _el = el;
-      (me._st = _el.style)[me._px] = me.toCSS();
+      (this._st = _el.style)[ this._px ] = this.toCSS();
     }
   });
 
-  if (element) me.element = element
+  if ( element ) this.element = element;
 }
 
 /**
  * Returns a new matrix that transforms a triangle `t1` into another triangle
  * `t2`, or throws an exception if it is impossible.
  *
- * Note: the method can take both arrays as well as literal objects.
+ * Note: the method can take both arrays and literal objects.
  * Just make sure that both arguments (`t1`, `t2`) are of the same type.
  *
  * @param {{px: number, py: number, qx: number, qy: number, rx: number, ry: number}|Array} t1 - Object or array containing the three points for the triangle.
@@ -74,32 +75,37 @@ function Matrix(context, element) {
  */
 Matrix.fromTriangles = function(t1, t2, context) {
 
-  var
-    m1 = new Matrix(),
-    m2 = new Matrix(context),
-    r1, r2, rx1, ry1, rx2, ry2;
+  const m1 = new Matrix();
+  const m2 = new Matrix(context);
+  let r1, r2, rx1, ry1, rx2, ry2;
 
-  if (Array.isArray(t1)) {
-    if (typeof t1[0] === "number") {
-      rx1 = t1[4]; ry1 = t1[5]; rx2 = t2[4]; ry2 = t2[5];
-      r1 = [t1[0] - rx1, t1[1] - ry1, t1[2] - rx1, t1[3] - ry1, rx1, ry1];
-      r2 = [t2[0] - rx2, t2[1] - ry2, t2[2] - rx2, t2[3] - ry2, rx2, ry2]
+  if ( Array.isArray(t1) ) {
+    if ( typeof t1[ 0 ] === 'number' ) {
+      rx1 = t1[ 4 ];
+      ry1 = t1[ 5 ];
+      rx2 = t2[ 4 ];
+      ry2 = t2[ 5 ];
+      r1 = [ t1[ 0 ] - rx1, t1[ 1 ] - ry1, t1[ 2 ] - rx1, t1[ 3 ] - ry1, rx1, ry1 ];
+      r2 = [ t2[ 0 ] - rx2, t2[ 1 ] - ry2, t2[ 2 ] - rx2, t2[ 3 ] - ry2, rx2, ry2 ];
     }
     else {
-      rx1 = t1[2].x; ry1 = t1[2].y; rx2 = t2[2].x; ry2 = t2[2].y;
-      r1 = [t1[0].x - rx1, t1[0].y - ry1, t1[1].x - rx1, t1[1].y - ry1, rx1, ry1];
-      r2 = [t2[0].x - rx2, t2[0].y - ry2, t2[1].x - rx2, t2[1].y - ry2, rx2, ry2]
+      rx1 = t1[ 2 ].x;
+      ry1 = t1[ 2 ].y;
+      rx2 = t2[ 2 ].x;
+      ry2 = t2[ 2 ].y;
+      r1 = [ t1[ 0 ].x - rx1, t1[ 0 ].y - ry1, t1[ 1 ].x - rx1, t1[ 1 ].y - ry1, rx1, ry1 ];
+      r2 = [ t2[ 0 ].x - rx2, t2[ 0 ].y - ry2, t2[ 1 ].x - rx2, t2[ 1 ].y - ry2, rx2, ry2 ];
     }
   }
   else {
-    r1 = [t1.px - t1.rx, t1.py - t1.ry, t1.qx - t1.rx, t1.qy - t1.ry, t1.rx, t1.ry];
-    r2 = [t2.px - t2.rx, t2.py - t2.ry, t2.qx - t2.rx, t2.qy - t2.ry, t2.rx, t2.ry]
+    r1 = [ t1.px - t1.rx, t1.py - t1.ry, t1.qx - t1.rx, t1.qy - t1.ry, t1.rx, t1.ry ];
+    r2 = [ t2.px - t2.rx, t2.py - t2.ry, t2.qx - t2.rx, t2.qy - t2.ry, t2.rx, t2.ry ];
   }
 
   m1.setTransform.apply(m1, r1);
   m2.setTransform.apply(m2, r2);
 
-  return m2.multiply(m1.inverse())
+  return m2.multiply(m1.inverse());
 };
 
 /**
@@ -117,14 +123,13 @@ Matrix.fromTriangles = function(t1, t2, context) {
  */
 Matrix.fromSVGTransformList = function(tList, context, dom) {
 
-  var
-    m = new Matrix(context, dom),
-    i = 0;
+  const m = new Matrix(context, dom);
+  let i = 0;
 
-  while(i < tList.length)
-    m.multiply(tList[i++].matrix);
+  while( i < tList.length )
+    m.multiply(tList[ i++ ].matrix);
 
-  return m
+  return m;
 };
 
 /**
@@ -141,8 +146,8 @@ Matrix.fromSVGTransformList = function(tList, context, dom) {
  * var m = Matrix.from(matrix);
  * var m = Matrix.from(vector [,pre-x] [,pre-y] [,doScale]);
  *
- * @param {*} a - number representing a in [a-f], or a Matrix object containing properties a-f. Vector is given as an object with properties x and y.
- * @param {*} [b] - b property if a is not a matrix object, or optional canvas 2D context.
+ * @param {*} a - number representing `a` in [a-f], or a Matrix object containing properties a-f. Vector is given as an object with properties x and y.
+ * @param {*} [b] - b property if `a` is not a matrix object, or optional canvas 2D context.
  * If vector is input this will be pre-translate for x.
  * @param {number} [c] - If vector is input this will be pre-translate for y.
  * @param {number} [d] - If vector is input, set this to true to use scale and translate of 1,
@@ -156,17 +161,17 @@ Matrix.fromSVGTransformList = function(tList, context, dom) {
  */
 Matrix.from = function(a, b, c, d, e, f, context, dom) {
 
-  var m = new Matrix(context, dom), scale, dist, q;
+  const m = new Matrix(context, dom);
 
-  if (typeof a === "number")
+  if ( typeof a === 'number' ) {
     m.setTransform(a, b, c, d, e, f);
+  }
+  else if ( typeof a.x === 'number' ) {		// vector
+    const q = Math.sqrt(a.x * a.x + a.y * a.y);
+    let scale = 1;
+    let dist = 1;
 
-  else if (typeof a.x === "number") {		// vector
-
-    q = Math.sqrt(a.x*a.x + a.y*a.y);
-    scale = dist = 1;
-
-    if (d) scale = q;
+    if ( d ) scale = q;
     else dist = q;
 
     m
@@ -174,28 +179,26 @@ Matrix.from = function(a, b, c, d, e, f, context, dom) {
       .rotateFromVector(a)
       .scaleU(scale)
       .translate(dist, 0);
-
   }
   else {
-    if (typeof a.is2D === "boolean" && !a.is2D) throw "Cannot use 3D DOMMatrix.";
-    if (b) m.context = b;
-    if (c) m.element = c;
-    m.multiply(a)
+    if ( typeof a.is2D === 'boolean' && !a.is2D ) throw 'Cannot use 3D DOMMatrix.';
+    if ( b ) m.context = b;
+    if ( c ) m.element = c;
+    m.multiply(a);
   }
 
-  return m
+  return m;
 };
 
 Matrix.prototype = {
 
   _getPX: function() {
+    const lst = [ 't', 'oT', 'msT', 'mozT', 'webkitT', 'khtmlT' ];
+    let i = 0, p;
+    const style = document.createElement('div').style;
 
-    var
-      lst   = ["t", "oT", "msT", "mozT", "webkitT", "khtmlT"], i = 0, p,
-      style = document.createElement("div").style;
-
-    while(p = lst[i++])
-      if (typeof style[p + "ransform"] !== "undefined") return p + "ransform";
+    while( p = lst[ i++ ] )
+      if ( typeof style[ p + 'ransform' ] !== 'undefined' ) return p + 'ransform';
   },
 
   /**
@@ -206,7 +209,7 @@ Matrix.prototype = {
    * @returns {Matrix} - new Matrix instance
    */
   concat: function(cm) {
-    return this.clone().multiply(cm)
+    return this.clone().multiply(cm);
   },
 
   /**
@@ -214,7 +217,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   flipX: function() {
-    return this._t(-1, 0, 0, 1, 0, 0)
+    return this._t(-1, 0, 0, 1, 0, 0);
   },
 
   /**
@@ -222,12 +225,12 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   flipY: function() {
-    return this._t(1, 0, 0, -1, 0, 0)
+    return this._t(1, 0, 0, -1, 0, 0);
   },
 
   /**
    * Reflects incoming (velocity) vector on the normal which will be the
-   * current transformed x axis. Call when a trigger condition is met.
+   * currently transformed x-axis. Call when a trigger condition is met.
    *
    * @param {number} x - vector end point for x (start = 0)
    * @param {number} y - vector end point for y (start = 0)
@@ -235,22 +238,21 @@ Matrix.prototype = {
    */
   reflectVector: function(x, y) {
 
-    var
-      v = this.applyToPoint(0, 1),
-      d = (v.x * x + v.y * y) * 2;
+    const v = this.applyToPoint(0, 1);
+    const d = (v.x * x + v.y * y) * 2;
 
     x -= d * v.x;
     y -= d * v.y;
 
-    return {x: x, y: y}
+    return { x, y };
   },
 
   /**
-   * Short-hand to reset current matrix to an identity matrix.
+   * Shorthand to reset current matrix to an identity matrix.
    * @returns {Matrix}
    */
   reset: function() {
-    return this.setTransform(1, 0, 0, 1, 0, 0)
+    return this.setTransform(1, 0, 0, 1, 0, 0);
   },
 
   /**
@@ -259,10 +261,9 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   rotate: function(angle) {
-    var
-      cos = Math.cos(angle),
-      sin = Math.sin(angle);
-    return this._t(cos, sin, -sin, cos, 0, 0)
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    return this._t(cos, sin, -sin, cos, 0, 0);
   },
 
   /**
@@ -274,7 +275,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   rotateFromVector: function(x, y) {
-    return this.rotate(typeof x === "number" ? Math.atan2(y, x) : Math.atan2(x.y, x.x))
+    return this.rotate(typeof x === 'number' ? Math.atan2(y, x) : Math.atan2(x.y, x.x));
   },
 
   /**
@@ -283,7 +284,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   rotateDeg: function(angle) {
-    return this.rotate(angle * Math.PI / 180)
+    return this.rotate(angle * Math.PI / 180);
   },
 
   /**
@@ -292,7 +293,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   scaleU: function(f) {
-    return this._t(f, 0, 0, f, 0, 0)
+    return this._t(f, 0, 0, f, 0, 0);
   },
 
   /**
@@ -302,7 +303,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   scale: function(sx, sy) {
-    return this._t(sx, 0, 0, sy, 0, 0)
+    return this._t(sx, 0, 0, sy, 0, 0);
   },
 
   /**
@@ -311,7 +312,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   scaleX: function(sx) {
-    return this._t(sx, 0, 0, 1, 0, 0)
+    return this._t(sx, 0, 0, 1, 0, 0);
   },
 
   /**
@@ -320,7 +321,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   scaleY: function(sy) {
-    return this._t(1, 0, 0, sy, 0, 0)
+    return this._t(1, 0, 0, sy, 0, 0);
   },
 
   /**
@@ -330,7 +331,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   scaleFromVector: function(x, y) {
-    return this.scaleU(Math.sqrt(x*x + y*y))
+    return this.scaleU(Math.sqrt(x * x + y * y));
   },
 
   /**
@@ -340,7 +341,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   shear: function(sx, sy) {
-    return this._t(1, sy, sx, 1, 0, 0)
+    return this._t(1, sy, sx, 1, 0, 0);
   },
 
   /**
@@ -349,7 +350,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   shearX: function(sx) {
-    return this._t(1, 0, sx, 1, 0, 0)
+    return this._t(1, 0, sx, 1, 0, 0);
   },
 
   /**
@@ -358,7 +359,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   shearY: function(sy) {
-    return this._t(1, sy, 0, 1, 0, 0)
+    return this._t(1, sy, 0, 1, 0, 0);
   },
 
   /**
@@ -369,7 +370,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   skew: function(ax, ay) {
-    return this.shear(Math.tan(ax), Math.tan(ay))
+    return this.shear(Math.tan(ax), Math.tan(ay));
   },
 
   /**
@@ -380,7 +381,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   skewDeg: function(ax, ay) {
-    return this.shear(Math.tan(ax / 180 * Math.PI), Math.tan(ay / 180 * Math.PI))
+    return this.shear(Math.tan(ax / 180 * Math.PI), Math.tan(ay / 180 * Math.PI));
   },
 
   /**
@@ -390,7 +391,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   skewX: function(ax) {
-    return this.shearX(Math.tan(ax))
+    return this.shearX(Math.tan(ax));
   },
 
   /**
@@ -400,7 +401,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   skewY: function(ay) {
-    return this.shearY(Math.tan(ay))
+    return this.shearY(Math.tan(ay));
   },
 
   /**
@@ -414,14 +415,13 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   setTransform: function(a, b, c, d, e, f) {
-    var me = this;
-    me.a = a;
-    me.b = b;
-    me.c = c;
-    me.d = d;
-    me.e = e;
-    me.f = f;
-    return me._x()
+    this.a = a;
+    this.b = b;
+    this.c = c;
+    this.d = d;
+    this.e = e;
+    this.f = f;
+    return this._x();
   },
 
   /**
@@ -431,25 +431,25 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   translate: function(tx, ty) {
-    return this._t(1, 0, 0, 1, tx, ty)
+    return this._t(1, 0, 0, 1, tx, ty);
   },
 
   /**
-   * Translate current matrix on x axis accumulative.
+   * Translate current matrix on x-axis accumulative.
    * @param {number} tx - translation for x
    * @returns {Matrix}
    */
   translateX: function(tx) {
-    return this._t(1, 0, 0, 1, tx, 0)
+    return this._t(1, 0, 0, 1, tx, 0);
   },
 
   /**
-   * Translate current matrix on y axis accumulative.
+   * Translate current matrix on y-axis accumulative.
    * @param {number} ty - translation for y
    * @returns {Matrix}
    */
   translateY: function(ty) {
-    return this._t(1, 0, 0, 1, 0, ty)
+    return this._t(1, 0, 0, 1, 0, ty);
   },
 
   /**
@@ -464,29 +464,26 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   transform: function(a2, b2, c2, d2, e2, f2) {
-
-    var
-      me = this,
-      a1 = me.a,
-      b1 = me.b,
-      c1 = me.c,
-      d1 = me.d,
-      e1 = me.e,
-      f1 = me.f;
+    const a1 = this.a;
+    const b1 = this.b;
+    const c1 = this.c;
+    const d1 = this.d;
+    const e1 = this.e;
+    const f1 = this.f;
 
     /* matrix column order is:
      *   a c e
      *   b d f
      *   0 0 1
      */
-    me.a = a1 * a2 + c1 * b2;
-    me.b = b1 * a2 + d1 * b2;
-    me.c = a1 * c2 + c1 * d2;
-    me.d = b1 * c2 + d1 * d2;
-    me.e = a1 * e2 + c1 * f2 + e1;
-    me.f = b1 * e2 + d1 * f2 + f1;
+    this.a = a1 * a2 + c1 * b2;
+    this.b = b1 * a2 + d1 * b2;
+    this.c = a1 * c2 + c1 * d2;
+    this.d = b1 * c2 + d1 * d2;
+    this.e = a1 * e2 + c1 * f2 + e1;
+    this.f = b1 * e2 + d1 * f2 + f1;
 
-    return me._x()
+    return this._x();
   },
 
   /**
@@ -495,7 +492,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   multiply: function(m) {
-    return this._t(m.a, m.b, m.c, m.d, m.e, m.f)
+    return this._t(m.a, m.b, m.c, m.d, m.e, m.f);
   },
 
   /**
@@ -505,7 +502,7 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   divide: function(m) {
-    return this.multiply(m.inverse())
+    return this.multiply(m.inverse());
   },
 
   /**
@@ -516,18 +513,16 @@ Matrix.prototype = {
    */
   divideScalar: function(d) {
 
-    var me = this;
+    if ( !d ) throw 'Division by zero';
 
-    if (!d) throw "Division on zero";
+    this.a /= d;
+    this.b /= d;
+    this.c /= d;
+    this.d /= d;
+    this.e /= d;
+    this.f /= d;
 
-    me.a /= d;
-    me.b /= d;
-    me.c /= d;
-    me.d /= d;
-    me.e /= d;
-    me.f /= d;
-
-    return me._x()
+    return this._x();
   },
 
   /**
@@ -542,21 +537,19 @@ Matrix.prototype = {
    */
   inverse: function(cloneContext, cloneDOM) {
 
-    var
-      me = this,
-      m  = new Matrix(cloneContext ? me.context : null, cloneDOM ? me.element : null),
-      dt = me.determinant();
+    const m = new Matrix(cloneContext ? this.context : null, cloneDOM ? this.element : null);
+    const dt = this.determinant();
 
-    if (!dt) throw "Matrix not invertible.";
+    if ( !dt ) throw 'Matrix is not invertible.';
 
-    m.a = me.d / dt;
-    m.b = -me.b / dt;
-    m.c = -me.c / dt;
-    m.d = me.a / dt;
-    m.e = (me.c * me.f - me.d * me.e) / dt;
-    m.f = -(me.a * me.f - me.b * me.e) / dt;
+    m.a = this.d / dt;
+    m.b = -this.b / dt;
+    m.c = -this.c / dt;
+    m.d = this.a / dt;
+    m.e = (this.c * this.f - this.d * this.e) / dt;
+    m.f = -(this.a * this.f - this.b * this.e) / dt;
 
-    return m
+    return m;
   },
 
   /**
@@ -578,18 +571,16 @@ Matrix.prototype = {
    */
   interpolate: function(m2, t, context, dom) {
 
-    var
-      me = this,
-      m  = new Matrix(context, dom);
+    const m = new Matrix(context, dom);
 
-    m.a = me.a + (m2.a - me.a) * t;
-    m.b = me.b + (m2.b - me.b) * t;
-    m.c = me.c + (m2.c - me.c) * t;
-    m.d = me.d + (m2.d - me.d) * t;
-    m.e = me.e + (m2.e - me.e) * t;
-    m.f = me.f + (m2.f - me.f) * t;
+    m.a = this.a + (m2.a - this.a) * t;
+    m.b = this.b + (m2.b - this.b) * t;
+    m.c = this.c + (m2.c - this.c) * t;
+    m.d = this.d + (m2.d - this.d) * t;
+    m.e = this.e + (m2.e - this.e) * t;
+    m.f = this.f + (m2.f - this.f) * t;
 
-    return m._x()
+    return m._x();
   },
 
   /**
@@ -614,13 +605,12 @@ Matrix.prototype = {
    */
   interpolateAnim: function(m2, t, context, dom) {
 
-    var
-      m  = new Matrix(context, dom),
-      d1 = this.decompose(),
-      d2 = m2.decompose(),
-      t1 = d1.translate,
-      t2 = d2.translate,
-      s1 = d1.scale;
+    const m = new Matrix(context, dom);
+    const d1 = this.decompose();
+    const d2 = m2.decompose();
+    const t1 = d1.translate;
+    const t2 = d2.translate;
+    const s1 = d1.scale;
 
     // QR order (t-r-s-sk)
     m.translate(t1.x + (t2.x - t1.x) * t, t1.y + (t2.y - t1.y) * t);
@@ -628,7 +618,7 @@ Matrix.prototype = {
     m.scale(s1.x + (d2.scale.x - s1.x) * t, s1.y + (d2.scale.y - s1.y) * t);
     //todo test skew scenarios
 
-    return m._x()
+    return m._x();
   },
 
   /**
@@ -642,56 +632,51 @@ Matrix.prototype = {
    */
   decompose: function(useLU) {
 
-    var
-      me        = this,
-      a         = me.a,
-      b         = me.b,
-      c         = me.c,
-      d         = me.d,
-      acos      = Math.acos,
-      atan      = Math.atan,
-      sqrt      = Math.sqrt,
-      pi        = Math.PI,
+    const a = this.a;
+    const b = this.b;
+    const c = this.c;
+    const d = this.d;
+    const pi = Math.PI;
 
-      translate = {x: me.e, y: me.f},
-      rotation  = 0,
-      scale     = {x: 1, y: 1},
-      skew      = {x: 0, y: 0},
+    const translate = { x: this.e, y: this.f };
+    let rotation = 0;
+    let scale = { x: 1, y: 1 };
+    let skew = { x: 0, y: 0 };
 
-      determ    = a * d - b * c,	// determinant(), skip DRY here...
-      r, s;
+    const determ = a * d - b * c;	// determinant(), skip DRY here...
+    let r, s;
 
-    if (useLU) {
-      if (a) {
-        skew = {x: atan(c / a), y: atan(b / a)};
-        scale = {x: a, y: determ / a};
+    if ( useLU ) {
+      if ( a ) {
+        skew = { x: Math.atan(c / a), y: Math.atan(b / a) };
+        scale = { x: a, y: determ / a };
       }
-      else if (b) {
+      else if ( b ) {
         rotation = pi * 0.5;
-        scale = {x: b, y: determ / b};
-        skew.x = atan(d / b);
+        scale = { x: b, y: determ / b };
+        skew.x = Math.atan(d / b);
       }
       else { // a = b = 0
-        scale = {x: c, y: d};
+        scale = { x: c, y: d };
         skew.x = pi * 0.25;
       }
     }
     else {
       // Apply the QR-like decomposition.
-      if (a || b) {
-        r = sqrt(a * a + b * b);
-        rotation = b > 0 ? acos(a / r) : -acos(a / r);
-        scale = {x: r, y: determ / r};
-        skew.x = atan((a * c + b * d) / (r * r));
+      if ( a || b ) {
+        r = Math.sqrt(a * a + b * b);
+        rotation = b > 0 ? Math.acos(a / r) : -Math.acos(a / r);
+        scale = { x: r, y: determ / r };
+        skew.x = Math.atan((a * c + b * d) / (r * r));
       }
-      else if (c || d) {
-        s = sqrt(c * c + d * d);
-        rotation = pi * 0.5 - (d > 0 ? acos(-c / s) : -acos(c / s));
-        scale = {x: determ / s, y: s};
-        skew.y = atan((a * c + b * d) / (s * s));
+      else if ( c || d ) {
+        s = Math.sqrt(c * c + d * d);
+        rotation = pi * 0.5 - (d > 0 ? Math.acos(-c / s) : -Math.acos(c / s));
+        scale = { x: determ / s, y: s };
+        skew.y = Math.atan((a * c + b * d) / (s * s));
       }
       else { // a = b = c = d = 0
-        scale = {x: 0, y: 0};
+        scale = { x: 0, y: 0 };
       }
     }
 
@@ -700,7 +685,7 @@ Matrix.prototype = {
       rotation : rotation,
       scale    : scale,
       skew     : skew
-    }
+    };
   },
 
   /**
@@ -708,7 +693,7 @@ Matrix.prototype = {
    * @returns {number}
    */
   determinant: function() {
-    return this.a * this.d - this.b * this.c
+    return this.a * this.d - this.b * this.c;
   },
 
   /**
@@ -720,11 +705,10 @@ Matrix.prototype = {
    * @returns {{x: number, y: number}} A new transformed point object
    */
   applyToPoint: function(x, y) {
-    var me = this;
     return {
-      x: x * me.a + y * me.c + me.e,
-      y: x * me.b + y * me.d + me.f
-    }
+      x: x * this.a + y * this.c + this.e,
+      y: x * this.b + y * this.d + this.f
+    };
   },
 
   /**
@@ -748,26 +732,24 @@ Matrix.prototype = {
    */
   applyToArray: function(points) {
 
-    var
-      i = 0, p, l,
-      mxPoints = [];
+    const mxPoints = [];
+    let i = 0, p, l;
 
-    if (typeof points[0] === 'number') {
-
+    if ( typeof points[ 0 ] === 'number' ) {
       l = points.length;
 
-      while(i < l) {
-        p = this.applyToPoint(points[i++], points[i++]);
+      while( i < l ) {
+        p = this.applyToPoint(points[ i++ ], points[ i++ ]);
         mxPoints.push(p.x, p.y);
       }
     }
     else {
-      while(p = points[i++]) {
+      while( p = points[ i++ ] ) {
         mxPoints.push(this.applyToPoint(p.x, p.y));
       }
     }
 
-    return mxPoints
+    return mxPoints;
   },
 
   /**
@@ -782,18 +764,16 @@ Matrix.prototype = {
    */
   applyToTypedArray: function(points, use64) {
 
-    var
-      i = 0, p,
-      l = points.length,
-      mxPoints = use64 ? new Float64Array(l) : new Float32Array(l);
+    const mxPoints = use64 ? new Float64Array(points.length) : new Float32Array(points.length);
+    let i = 0;
 
-    while(i < l) {
-      p = this.applyToPoint(points[i], points[i + 1]);
-      mxPoints[i++] = p.x;
-      mxPoints[i++] = p.y;
+    while( i < points.length ) {
+      const p = this.applyToPoint(points[ i ], points[ i + 1 ]);
+      mxPoints[ i++ ] = p.x;
+      mxPoints[ i++ ] = p.y;
     }
 
-    return mxPoints
+    return mxPoints;
   },
 
   /**
@@ -805,9 +785,8 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   applyToContext: function(context) {
-    var me = this;
-    context.setTransform(me.a, me.b, me.c, me.d, me.e, me.f);
-    return me
+    context.setTransform(this.a, this.b, this.c, this.d, this.e, this.f);
+    return this;
   },
 
   /**
@@ -822,10 +801,9 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   applyToElement: function(element, use3D) {
-    var me = this;
-    if (!me._px) me._px = me._getPX();
-    element.style[me._px] = use3D ? me.toCSS3D() : me.toCSS();
-    return me
+    if ( !this._px ) this._px = this._getPX();
+    element.style[ this._px ] = use3D ? this.toCSS3D() : this.toCSS();
+    return this;
   },
 
   /**
@@ -841,14 +819,13 @@ Matrix.prototype = {
    * @returns {Matrix}
    */
   applyToObject: function(obj) {
-    var me = this;
-    obj.a = me.a;
-    obj.b = me.b;
-    obj.c = me.c;
-    obj.d = me.d;
-    obj.e = me.e;
-    obj.f = me.f;
-    return me
+    obj.a = this.a;
+    obj.b = this.b;
+    obj.c = this.c;
+    obj.d = this.d;
+    obj.e = this.e;
+    obj.f = this.f;
+    return this;
   },
 
   /**
@@ -856,8 +833,7 @@ Matrix.prototype = {
    * @returns {boolean}
    */
   isIdentity: function() {
-    var me = this;
-    return me.a === 1 && !me.b && !me.c && me.d === 1 && !me.e && !me.f
+    return this.a === 1 && !this.b && !this.c && this.d === 1 && !this.e && !this.f;
   },
 
   /**
@@ -865,7 +841,7 @@ Matrix.prototype = {
    * @returns {boolean}
    */
   isInvertible: function() {
-    return !this._q(this.determinant(), 0)
+    return !this._q(this.determinant(), 0);
   },
 
   /**
@@ -877,7 +853,7 @@ Matrix.prototype = {
    * @returns {boolean}
    */
   isValid: function() {
-    return !(this.a * this.d)
+    return !(this.a * this.d);
   },
 
   /**
@@ -888,16 +864,12 @@ Matrix.prototype = {
    */
   isEqual: function(m) {
 
-    var
-      me = this,
-      q = me._q;
-
-    return q(me.a, m.a) &&
-           q(me.b, m.b) &&
-           q(me.c, m.c) &&
-           q(me.d, m.d) &&
-           q(me.e, m.e) &&
-           q(me.f, m.f)
+    return this._q(this.a, m.a) &&
+      this._q(this.b, m.b) &&
+      this._q(this.c, m.c) &&
+      this._q(this.d, m.d) &&
+      this._q(this.e, m.e) &&
+      this._q(this.f, m.f);
   },
 
   /**
@@ -906,7 +878,7 @@ Matrix.prototype = {
    * @returns {Matrix} - a new Matrix instance with identical transformations as this instance
    */
   clone: function(noContext) {
-    return new Matrix(noContext ? null : this.context).multiply(this)
+    return new Matrix(noContext ? null : this.context).multiply(this);
   },
 
   /**
@@ -914,8 +886,7 @@ Matrix.prototype = {
    * @returns {Array}
    */
   toArray: function() {
-    var me = this;
-    return [me.a, me.b, me.c, me.d, me.e, me.f]
+    return [ this.a, this.b, this.c, this.d, this.e, this.f ];
   },
 
   /**
@@ -923,8 +894,7 @@ Matrix.prototype = {
    * @returns {*}
    */
   toTypedArray: function() {
-    var me = this;
-    return new Float32Array([me.a, me.b, me.c, me.d, me.e, me.f]);
+    return new Float32Array([ this.a, this.b, this.c, this.d, this.e, this.f ]);
   },
 
   /**
@@ -934,20 +904,20 @@ Matrix.prototype = {
    * @returns {string}
    */
   toCSS: function() {
-    return "matrix(" + this.toArray() + ")"
+    return 'matrix(' + this.toArray() + ')';
   },
 
   /**
    * Generates a `matrix3d()` string that can be used with CSS `transform`.
    * Although the matrix is for 2D use you may see performance benefits
-   * on some devices using a 3D CSS transform instead of a 2D.
+   * on some devices using a 3D CSS transform instead of a 2D one.
    * @example
    *     element.style.transform = m.toCSS3D();
    * @returns {string}
    */
   toCSS3D: function() {
-    var me = this, n2 = ",0,0,";
-    return "matrix3d(" + me.a + "," + me.b + n2 + me.c + "," + me.d + n2 + n2 + ",1,0," + me.e + "," + me.f + ",0,1)"
+    const n2 = ',0,0,';
+    return 'matrix3d(' + this.a + ',' + this.b + n2 + this.c + ',' + this.d + n2 + n2 + ',1,0,' + this.e + ',' + this.f + ',0,1)';
   },
 
   /**
@@ -955,8 +925,7 @@ Matrix.prototype = {
    * @returns {string}
    */
   toJSON: function() {
-    var me = this;
-    return '{"a":' + me.a + ',"b":' + me.b + ',"c":' + me.c + ',"d":' + me.d + ',"e":' + me.e + ',"f":' + me.f + '}'
+    return '{"a":' + this.a + ',"b":' + this.b + ',"c":' + this.c + ',"d":' + this.d + ',"e":' + this.e + ',"f":' + this.f + '}';
   },
 
   /**
@@ -965,14 +934,13 @@ Matrix.prototype = {
    * @returns {string}
    */
   toString: function(fixLen) {
-    var me = this;
     fixLen = fixLen || 4;
-    return "a=" + me.a.toFixed(fixLen) +
-           " b=" + me.b.toFixed(fixLen) +
-           " c=" + me.c.toFixed(fixLen) +
-           " d=" + me.d.toFixed(fixLen) +
-           " e=" + me.e.toFixed(fixLen) +
-           " f=" + me.f.toFixed(fixLen)
+    return 'a=' + this.a.toFixed(fixLen) +
+      ' b=' + this.b.toFixed(fixLen) +
+      ' c=' + this.c.toFixed(fixLen) +
+      ' d=' + this.d.toFixed(fixLen) +
+      ' e=' + this.e.toFixed(fixLen) +
+      ' f=' + this.f.toFixed(fixLen);
   },
 
   /**
@@ -981,7 +949,7 @@ Matrix.prototype = {
    * @returns {string}
    */
   toCSV: function() {
-    return this.toArray().join() + "\r\n"
+    return this.toArray().join() + '\r\n';
   },
 
   /**
@@ -992,8 +960,8 @@ Matrix.prototype = {
    * @see {@link https://drafts.fxtf.org/geometry/#dommatrix|MDN / SVGMatrix}
    */
   toDOMMatrix: function() {
-    var m = null;
-    if ("DOMMatrix" in window) {
+    let m = null;
+    if ( 'DOMMatrix' in window ) {
       m = new DOMMatrix();
       m.a = this.a;
       m.b = this.b;
@@ -1002,7 +970,7 @@ Matrix.prototype = {
       m.e = this.e;
       m.f = this.f;
     }
-    return m
+    return m;
   },
 
   /**
@@ -1014,22 +982,20 @@ Matrix.prototype = {
    */
   toSVGMatrix: function() {
 
-    var
-      me = this,
-      svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"),
-      svgMatrix = null;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    let svgMatrix = null;
 
-    if (svg) {
+    if ( svg ) {
       svgMatrix = svg.createSVGMatrix();
-      svgMatrix.a = me.a;
-      svgMatrix.b = me.b;
-      svgMatrix.c = me.c;
-      svgMatrix.d = me.d;
-      svgMatrix.e = me.e;
-      svgMatrix.f = me.f;
+      svgMatrix.a = this.a;
+      svgMatrix.b = this.b;
+      svgMatrix.c = this.c;
+      svgMatrix.d = this.d;
+      svgMatrix.e = this.e;
+      svgMatrix.f = this.f;
     }
 
-    return svgMatrix
+    return svgMatrix;
   },
 
   /**
@@ -1040,28 +1006,29 @@ Matrix.prototype = {
    * @private
    */
   _q: function(f1, f2) {
-    return Math.abs(f1 - f2) < 1e-14
+    return Math.abs(f1 - f2) < 1e-14;
   },
 
   /**
    * Apply current absolute matrix to context if defined, to sync it.
-   * Apply current absolute matrix to element if defined, to sync it.
    * @returns {Matrix}
    * @private
    */
   _x: function() {
 
-    var me = this;
+    if ( this.context ) {
+      this.context.setTransform(this.a, this.b, this.c, this.d, this.e, this.f);
+    }
 
-    if (me.context)
-      me.context.setTransform(me.a, me.b, me.c, me.d, me.e, me.f);
+    if ( this._st ) {
+      this._st[ this._px ] = this.useCSS3D ? this.toCSS3D() : this.toCSS();
+    }
 
-    if (me._st)
-      me._st[me._px] = me.useCSS3D ? me.toCSS3D() : me.toCSS();	// can be optimized pre-storing func ref.
-
-    return me
+    return this;
   }
 };
 
 // Node support
-if (typeof exports !== "undefined") exports.Matrix = Matrix;
+if ( typeof exports !== 'undefined' ) exports.Matrix = Matrix;
+
+// TODO ES5 export support
