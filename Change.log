@@ -1,6 +1,9 @@
 Change log for 2D Transformation Matrix
 ---------------------------------------
 
+3.0.0
+From this version on changes will be the git log itself.
+
 2.7.5
 FIX: MatrixLT instancing via from() returned Matrix instead of MatrixLT
 
