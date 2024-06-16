@@ -23,15 +23,11 @@ Download zip and extract to folder.
 
 git via HTTPS:
 
-    $ git clone https://gitlab.com/epistemex/transformation-matrix-js.git
+    $ git clone https://github.com/epistemex/transformation-matrix-js.git
 
 git via SSH:
 
-    $ git clone git@gitlab.com:epistemex/transformation-matrix-js.git
-
-Using Bower:
-
-    $ bower install transformation-matrix-js
+    $ git clone git@github.com:epistemex/transformation-matrix-js.git
 
 Using NPM
 
@@ -46,7 +42,7 @@ Browser
 
 Just include the script and create a new instance:
 
-    var matrix = new Matrix([context] [,domElement]);
+    const matrix = new Matrix([context] [,domElement]);
 
 You can supply an optional canvas 2D context and/or DOM element as arguments which will be synchronized with the transformations that are applied to the matrix object.
 
@@ -56,8 +52,8 @@ Node
 
 Using it with Node: use **npm** to install the package first (see above), then
 
-    var Matrix = require("transformation-matrix-js").Matrix;
-    var m = new Matrix();
+    const Matrix = require("transformation-matrix-js").Matrix;
+    const m = new Matrix();
 
 
 Quick overview
@@ -65,7 +61,7 @@ Quick overview
 
 **Constructor**
 
-    var m = new Matrix( [context] [,element] );
+    const m = new Matrix( [context] [,element] );
 
 Can optionally synchronize a canvas 2D context and/or a DOM element.
 
@@ -164,7 +160,7 @@ Get inverse transformation matrix (the matrix you need to apply to get back to a
 
 or
 
-    var invMatrix;
+    let invMatrix;
 
     if (m.isInvertible()) {             // check if we can inverse
         invMatrix = m.inverse();
@@ -206,7 +202,7 @@ See documentation for full overview and usage.
 Contributors
 ============
 
-- Ken Nilsen (creator) (https://gitlab.com/epistemex)
+- Chris (creator) (https://github.com/epistemex)
 - Leon Sorokin (https://github.com/leeoniya)
 - Henry Ruhs (https://github.com/redaxmedia)
 - Matthieu Dumas (https://github.com/solendil)
@@ -223,4 +219,4 @@ Released under [MIT license](http://choosealicense.com/licenses/mit/). You can u
 
 *&copy; 2014-2018 Epistemex*
 
-![Epistemex](http://i.imgur.com/GP6Q3v8.png)
+![Epistemex](https://i.imgur.com/GP6Q3v8.png)
