@@ -13,9 +13,6 @@ Targets first and most client side use, but can be used directly in a node.js en
 
 *No dependencies.*
 
-There is now also included a "light" version with the essentials only.
-
-
 Install
 =======
 
@@ -29,10 +26,9 @@ git via SSH:
 
     $ git clone git@github.com:epistemex/transformation-matrix-js.git
 
-Using NPM
+you can include the package in a Nodejs project using NPM this way:
 
-    $ npm install transformation-matrix-js
-
+    $ npm install /path/to/downloaded/transformation-matrix-js/
 
 Usage
 =====
@@ -202,14 +198,14 @@ See documentation for full overview and usage.
 Contributors
 ============
 
-- Chris (creator) (https://github.com/epistemex)
+- Chris / epistemex (creator) (https://github.com/epistemex)
 - Leon Sorokin (https://github.com/leeoniya)
 - Henry Ruhs (https://github.com/redaxmedia)
 - Matthieu Dumas (https://github.com/solendil)
 - Viktor Hesselbom (https://github.com/hesselbom)
 - Larry Gordon (https://github.com/psyrendust)
 
-See Change.log for details.
+See git log and Change.log ( < v3 ) for details.
 
 
 License
@@ -217,6 +213,6 @@ License
 
 Released under [MIT license](http://choosealicense.com/licenses/mit/). You can use this class in both commercial and non-commercial projects provided that full header (minified and developer versions) is included.
 
-*&copy; 2014-2018 Epistemex*
+*&copy; 2014-2018, 2024 Epistemex*
 
 ![Epistemex](https://i.imgur.com/GP6Q3v8.png)
