@@ -63,10 +63,10 @@ Can optionally synchronize a canvas 2D context and/or a DOM element.
 
 **Static methods (alternatives to the constructor):**
 
-    Matrix.from( a, b, c, d, e, f );        // create a matrix from various sources
+    Matrix.from( a, b, c, d, e, f );      // create a matrix from various sources
     Matrix.from( DOMMatrix | SVGMatrix | CSSMatrix);
-	Matrix.fromTriangles( t1, t2 );   		// returns matrix needed to produce t2 from t1
-	Matrix.fromSVGTransformList( tList );	// create new matrix from a SVG transform list
+	Matrix.fromTriangles( t1, t2 );       // returns matrix needed to produce t2 from t1
+	Matrix.fromSVGTransformList( tList ); // create new matrix from a SVG transform list
 
 **Methods:**
 
@@ -99,7 +99,7 @@ Can optionally synchronize a canvas 2D context and/or a DOM element.
 	rotateFromVector(x, y)
 	scale(sx, sy)
 	scaleFromVector(x, y)               // uniform scale based on input vector (hypotenuse)
-	scaleU(f)							// uniform scale
+	scaleU(f)                           // uniform scale
 	scaleX(sx)
 	scaleY(sy)
 	setTransform(a, b, c, d, e, f)
@@ -117,7 +117,7 @@ Can optionally synchronize a canvas 2D context and/or a DOM element.
 	toJSON()
 	toString()
 	toDOMMatrix()                       // creates a DOMMatrix from current transforms
-	toSVGMatrix()						// creates a SVGMatrix from current transforms
+	toSVGMatrix()                       // creates a SVGMatrix from current transforms
 	toTypedArray([use64])
 	transform(a2, b2, c2, d2, e2, f2)
 	translate(tx, ty)
@@ -126,12 +126,12 @@ Can optionally synchronize a canvas 2D context and/or a DOM element.
 
 **Properties:**
 
-    a									// scale x
-    b									// shear y
-    c									// shear x
-    d									// scale y
-    e									// translate x
-    f									// translate y
+    a    // scale x
+    b    // shear y
+    c    // shear x
+    d    // scale y
+    e    // translate x
+    f    // translate y
 
 Examples
 --------
@@ -165,18 +165,18 @@ or
 You can interpolate between current and a new matrix. The function
 returns a new matrix:
 
-    im = m.interpolate( m2, t );   		// t = [0.0, 1.0]
+    im = m.interpolate( m2, t );        // t = [0.0, 1.0]
     im = m.interpolateAnim( m2, t );
 
 The former does a naive interpolation which works fine with translate and scale. The latter is better suited when there is rotation involved to avoid "flipping" utilizing decomposition.
 
 Check if there is any transforms applied:
 
-    state = m.isIdentity();        		// true if identity
+    state = m.isIdentity();             // true if identity
 
 Check if two matrices are identical:
 
-    state = m.isEqual( matrix2 );      	// true if equal
+    state = m.isEqual( matrix2 );       // true if equal
 
 Reset matrix to an identity matrix:
 
