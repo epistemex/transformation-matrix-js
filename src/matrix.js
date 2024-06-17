@@ -1029,6 +1029,6 @@ Matrix.prototype = {
 };
 
 // Node support
-if ( typeof exports !== 'undefined' ) exports.Matrix = Matrix;
-
-// TODO ES5 export support
+if ( typeof exports !== 'undefined' ) {
+  module.exports.Matrix = Matrix;
+}
