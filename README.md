@@ -33,6 +33,10 @@ git via SSH:
 
 you can include the package in a Nodejs project using NPM this way:
 
+    $ npm install https://github.com/epistemex/transformation-matrix-js
+
+or
+
     $ npm install /path/to/downloaded/transformation-matrix-js/
 
 Usage
@@ -203,7 +207,7 @@ See documentation for full overview and usage.
 Contributors
 ============
 
-- Chris / epistemex (creator) (https://github.com/epistemex)
+- epistemex (creator) (https://github.com/epistemex)
 - Leon Sorokin (https://github.com/leeoniya)
 - Henry Ruhs (https://github.com/redaxmedia)
 - Matthieu Dumas (https://github.com/solendil)
