@@ -13,6 +13,11 @@ Targets first and most client side use, but can be used directly in a node.js en
 
 *No dependencies.*
 
+_Help keep the project alive by supporting the developer:_
+
+[![PayPalMe](https://github.com/epistemex/transformation-matrix-js/assets/70324091/04203267-58f0-402b-9589-e2dee6e7c510)](https://paypal.me/KenNil)
+
+
 Install
 =======
 
